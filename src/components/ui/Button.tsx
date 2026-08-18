@@ -42,6 +42,18 @@ type MagneticProps = {
 };
 
 /**
+ * Resolved once and cached. The previous implementation called
+ * `window.matchMedia("(pointer: fine)")` inside the mousemove handler, which
+ * allocated a MediaQueryList on every pointer event.
+ */
+let finePointer: MediaQueryList | null = null;
+const isFinePointer = () => {
+  if (typeof window === "undefined") return false;
+  finePointer ??= window.matchMedia("(pointer: fine)");
+  return finePointer.matches;
+};
+
+/**
  * Magnetic CTA: the control drifts a few pixels toward the pointer, which makes
  * primary actions feel physical without moving them far enough to become a
  * hit-target problem. Disabled entirely for reduced motion and coarse pointers.
@@ -61,25 +73,34 @@ export function MagneticButton({
 }: MagneticProps) {
   const reduced = useReducedMotion();
   const ref = useRef<HTMLElement | null>(null);
+  // Measured once per hover instead of once per mousemove: reading a rect
+  // mid-event forces a synchronous layout, and a control cannot move while the
+  // pointer is inside it.
+  const rect = useRef<DOMRect | null>(null);
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const springX = useSpring(x, { stiffness: 260, damping: 18, mass: 0.4 });
   const springY = useSpring(y, { stiffness: 260, damping: 18, mass: 0.4 });
 
-  const handleMove = (event: MouseEvent) => {
+  const handleEnter = () => {
     const node = ref.current;
-    if (reduced || strength === 0 || !node) return;
-    if (!window.matchMedia("(pointer: fine)").matches) return;
+    if (reduced || strength === 0 || !node || !isFinePointer()) return;
+    rect.current = node.getBoundingClientRect();
+  };
 
-    const rect = node.getBoundingClientRect();
-    const relX = (event.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
-    const relY = (event.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
+  const handleMove = (event: MouseEvent) => {
+    const box = rect.current;
+    if (!box) return;
+
+    const relX = (event.clientX - (box.left + box.width / 2)) / (box.width / 2);
+    const relY = (event.clientY - (box.top + box.height / 2)) / (box.height / 2);
     x.set(relX * strength);
     y.set(relY * strength * 0.6);
   };
 
   const reset = () => {
+    rect.current = null;
     x.set(0);
     y.set(0);
   };
@@ -87,6 +108,7 @@ export function MagneticButton({
   const shared = {
     className: cn(BASE, VARIANTS[variant], SIZES[size], className),
     style: { x: springX, y: springY },
+    onMouseEnter: handleEnter,
     onMouseMove: handleMove,
     onMouseLeave: reset,
     onBlur: reset,

@@ -27,20 +27,30 @@ export function CustomCursor() {
   useEffect(() => {
     if (!enabled) return;
 
-    const onMove = (event: PointerEvent) => {
-      x.set(event.clientX);
-      y.set(event.clientY);
+    let frame = 0;
+    let pending: Element | null = null;
 
-      const target = event.target as Element | null;
+    /**
+     * The hit-test is the expensive half of this handler: `closest()` walks
+     * the ancestor chain, and a 240Hz mouse fires four times per frame. Only
+     * the motion values are updated per event — those never touch React — and
+     * the traversal is deferred to one rAF per frame.
+     */
+    const check = () => {
+      frame = 0;
       const active = Boolean(
-        target?.closest?.("a, button, [role='tab'], input, textarea, summary"),
+        pending?.closest?.("a, button, [role='tab'], input, textarea, summary"),
       );
-
-      // Only re-render when a boolean actually flips; position is motion-value
-      // driven and never touches React.
       setState((prev) =>
         prev.visible && prev.active === active ? prev : { visible: true, active },
       );
+    };
+
+    const onMove = (event: PointerEvent) => {
+      x.set(event.clientX);
+      y.set(event.clientY);
+      pending = event.target as Element | null;
+      if (!frame) frame = window.requestAnimationFrame(check);
     };
 
     const onLeave = () =>
@@ -49,6 +59,7 @@ export function CustomCursor() {
     window.addEventListener("pointermove", onMove, { passive: true });
     document.addEventListener("pointerleave", onLeave);
     return () => {
+      if (frame) window.cancelAnimationFrame(frame);
       window.removeEventListener("pointermove", onMove);
       document.removeEventListener("pointerleave", onLeave);
     };

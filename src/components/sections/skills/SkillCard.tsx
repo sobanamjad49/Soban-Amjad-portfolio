@@ -1,5 +1,3 @@
-"use client";
-
 import type { Skill } from "@/data/skills";
 import { GlowCard } from "@/components/ui/GlowCard";
 
@@ -18,9 +16,9 @@ export function SkillCard({ skill }: { skill: Skill }) {
         </span>
 
         <div className="min-w-0">
-          <h4 className="text-[14px] font-semibold tracking-tight sm:text-[15px]">
+          <h3 className="text-[14px] font-semibold tracking-tight sm:text-[15px]">
             {skill.name}
-          </h4>
+          </h3>
           <p className="mt-1 text-[12px] leading-snug text-ink-subtle text-pretty sm:text-[12.5px]">
             {skill.description}
           </p>

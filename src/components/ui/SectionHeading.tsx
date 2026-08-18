@@ -1,6 +1,3 @@
-"use client";
-
-import { motion, useReducedMotion } from "motion/react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Reveal } from "./Motion";
@@ -23,7 +20,6 @@ export function SectionHeading({
   align = "left",
   className,
 }: SectionHeadingProps) {
-  const reduced = useReducedMotion();
   const centered = align === "center";
 
   return (
@@ -76,16 +72,13 @@ export function SectionHeading({
       ) : null}
 
       {/* Hairline that draws itself in as the heading lands. */}
-      <motion.div
+      <div
         aria-hidden="true"
+        data-rule=""
         className={cn(
           "mt-1 h-px w-full max-w-[220px] origin-left bg-linear-to-r from-line-strong to-transparent",
           centered && "origin-center bg-linear-to-r from-transparent via-line-strong to-transparent",
         )}
-        initial={reduced ? undefined : { scaleX: 0, opacity: 0 }}
-        whileInView={reduced ? undefined : { scaleX: 1, opacity: 1 }}
-        viewport={{ once: true, margin: "-10% 0px" }}
-        transition={{ duration: 0.8, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
       />
     </div>
   );

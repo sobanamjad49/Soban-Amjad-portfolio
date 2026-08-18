@@ -39,6 +39,7 @@ export function Skills() {
 
   return (
     <section
+      data-cv="skills"
       id="skills"
       aria-labelledby="skills-heading"
       className="relative scroll-mt-24 overflow-hidden px-4 py-24 sm:px-6 sm:py-28 lg:px-8 lg:py-32"

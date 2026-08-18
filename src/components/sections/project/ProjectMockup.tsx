@@ -20,9 +20,11 @@ type Tone = "accent" | "positive" | "warning" | "neutral";
 
 const TONE_CLASS: Record<Tone, string> = {
   accent: "bg-accent-soft text-accent border-accent/30",
+  // -800 rather than -700: at 9px these pills need 4.5:1, and -700 sat at
+  // 4.87-5.11:1 fully opaque — no headroom while the entrance is still fading.
   positive:
-    "bg-emerald-500/10 text-emerald-700 border-emerald-500/25 dark:text-emerald-300",
-  warning: "bg-amber-500/10 text-amber-700 border-amber-500/25 dark:text-amber-300",
+    "bg-emerald-500/10 text-emerald-800 border-emerald-500/25 dark:text-emerald-300",
+  warning: "bg-amber-500/10 text-amber-800 border-amber-500/25 dark:text-amber-300",
   neutral: "bg-base-deep text-ink-subtle border-line",
 };
 
@@ -128,7 +130,7 @@ export function ProjectMockup({
     <div className={cn("group/mockup relative", className)}>
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -inset-6 -z-10 rounded-[2rem] bg-accent/15 opacity-0 blur-3xl transition-opacity duration-700 group-hover/mockup:opacity-100 dark:bg-accent/25"
+        className="glow-accent pointer-events-none absolute -inset-6 -z-10 rounded-[2rem] opacity-0 transition-opacity duration-700 group-hover/mockup:opacity-100"
       />
 
       <div
@@ -255,7 +257,7 @@ export function ProjectMockup({
                   <p className="text-[13px] font-semibold tracking-tight sm:text-sm">
                     {view.label}
                   </p>
-                  <p className="mt-0.5 text-[11px] leading-snug text-ink-subtle text-pretty">
+                  <p className="mt-0.5 text-[11px] leading-snug text-ink-muted text-pretty">
                     {view.caption}
                   </p>
                 </div>
@@ -267,16 +269,17 @@ export function ProjectMockup({
                       <li key={bar.label} className="flex w-full flex-col items-center gap-1.5">
                         <motion.span
                           aria-hidden="true"
-                          className="w-full rounded-t-[3px] bg-linear-to-t from-accent/20 to-accent"
-                          initial={reduced ? false : { height: 4, opacity: 0.4 }}
-                          animate={{ height: `${Math.round(bar.weight * 0.7)}px`, opacity: 1 }}
+                          className="w-full origin-bottom rounded-t-[3px] bg-linear-to-t from-accent/20 to-accent"
+                          style={{ height: `${Math.round(bar.weight * 0.7)}px` }}
+                          initial={reduced ? false : { scaleY: 0.06, opacity: 0.4 }}
+                          animate={{ scaleY: 1, opacity: 1 }}
                           transition={{
                             duration: 0.6,
                             delay: reduced ? 0 : 0.08 + index * 0.07,
                             ease: [0.16, 1, 0.3, 1],
                           }}
                         />
-                        <span className="w-full truncate text-center font-mono text-[8.5px] text-ink-subtle sm:text-[9.5px]">
+                        <span className="w-full truncate text-center font-mono text-[8.5px] text-ink-muted sm:text-[9.5px]">
                           {bar.label}
                         </span>
                       </li>

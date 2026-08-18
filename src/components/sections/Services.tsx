@@ -1,5 +1,3 @@
-"use client";
-
 import { ArrowUpRight } from "lucide-react";
 import { AuraBackdrop } from "@/components/ui/Backdrops";
 import { GlowCard } from "@/components/ui/GlowCard";
@@ -10,6 +8,7 @@ import { services, type Service } from "@/data/services";
 export function Services() {
   return (
     <section
+      data-cv="services"
       id="services"
       aria-labelledby="services-heading"
       className="relative scroll-mt-24 overflow-hidden px-4 py-24 sm:px-6 sm:py-28 lg:px-8 lg:py-32"
@@ -18,7 +17,7 @@ export function Services() {
 
       <div className="mx-auto w-full max-w-7xl">
         <SectionHeading
-          index="06"
+          index="08"
           eyebrow="Services"
           title={<span id="services-heading">What I Build</span>}
           description="The kinds of systems I'm brought in for — and what I make sure gets designed in rather than retrofitted."
