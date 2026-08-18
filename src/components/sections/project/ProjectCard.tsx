@@ -1,5 +1,3 @@
-"use client";
-
 import { ArrowUpRight, ExternalLink, Lock } from "lucide-react";
 import { ProjectCover } from "@/components/sections/project/ProjectCover";
 import { GithubIcon } from "@/components/ui/BrandIcons";

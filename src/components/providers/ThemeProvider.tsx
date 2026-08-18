@@ -2,11 +2,10 @@
 
 import { createContext, useCallback, useContext, useEffect, type ReactNode } from "react";
 
-const STORAGE_KEY = "sa-theme";
+import { STORAGE_KEY } from "@/lib/boot";
 
 type ThemeContextValue = {
-  /** `origin` lets the toggle expand the new theme from the button itself. */
-  toggleTheme: (origin?: { x: number; y: number }) => void;
+  toggleTheme: () => void;
 };
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
@@ -29,61 +28,37 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     return () => media.removeEventListener("change", onChange);
   }, []);
 
-  const toggleTheme = useCallback((origin?: { x: number; y: number }) => {
+  /**
+   * Flipping the class is the whole operation — one style recalc, no snapshot,
+   * no React state, no re-render.
+   *
+   * `theme-instant` suppresses every transition on the page for the single
+   * frame the class swap lands on. Without it, the ~40 components carrying a
+   * `transition-colors` hover treatment all animate simultaneously, and the
+   * resulting sustained repaint measured 2.5-6s per toggle on a throttled
+   * mobile CPU. With it, the same toggle lands in around 100ms. It is removed
+   * two frames later, so hover transitions behave normally straight after.
+   *
+   * A circular View Transition wipe was tried here first and cost ~1.1s on the
+   * first click, because the browser has to rasterise the whole viewport twice
+   * before it can animate.
+   */
+  const toggleTheme = useCallback(() => {
     const root = document.documentElement;
     const next = root.classList.contains("dark") ? "light" : "dark";
 
-    const apply = () => {
-      root.classList.toggle("dark", next === "dark");
-      try {
-        localStorage.setItem(STORAGE_KEY, next);
-      } catch {
-        // Private browsing or blocked storage — still applies for this session.
-      }
-    };
+    root.classList.add("theme-instant");
+    root.classList.toggle("dark", next === "dark");
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    // Progressive enhancement: a circular wipe from the toggle where the browser
-    // supports View Transitions, a plain colour cross-fade everywhere else.
-    if (reduced || !origin || typeof document.startViewTransition !== "function") {
-      root.classList.add("theme-shift");
-      apply();
-      window.setTimeout(() => root.classList.remove("theme-shift"), 460);
-      return;
-    }
-
-    const { x, y } = origin;
-    const radius = Math.hypot(
-      Math.max(x, window.innerWidth - x),
-      Math.max(y, window.innerHeight - y),
-    );
-
-    // Light -> dark grows the new layer; dark -> light retracts the old one,
-    // which reads more naturally than always growing.
-    const grow = next === "dark";
-    root.classList.toggle("theme-reveal-out", !grow);
-
-    const transition = document.startViewTransition(apply);
-
-    void transition.ready.then(() => {
-      const clip = [
-        `circle(0px at ${x}px ${y}px)`,
-        `circle(${radius}px at ${x}px ${y}px)`,
-      ];
-      root.animate(
-        { clipPath: grow ? clip : [...clip].reverse() },
-        {
-          duration: 620,
-          easing: "cubic-bezier(0.16, 1, 0.3, 1)",
-          pseudoElement: grow
-            ? "::view-transition-new(root)"
-            : "::view-transition-old(root)",
-        },
-      );
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => root.classList.remove("theme-instant"));
     });
 
-    void transition.finished.then(() => root.classList.remove("theme-reveal-out"));
+    try {
+      localStorage.setItem(STORAGE_KEY, next);
+    } catch {
+      // Private browsing or blocked storage — still applies for this session.
+    }
   }, []);
 
   return (
@@ -97,20 +72,3 @@ export function useTheme(): ThemeContextValue {
   return context;
 }
 
-/**
- * Injected as a blocking inline script in <head>. Dark is the intended default,
- * so an unknown visitor with no OS preference still lands on dark.
- */
-export const themeScript = `
-(function(){
-  try {
-    var stored = localStorage.getItem("${STORAGE_KEY}");
-    var prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
-    if ((stored || (prefersLight ? "light" : "dark")) === "dark") {
-      document.documentElement.classList.add("dark");
-    }
-  } catch (e) {
-    document.documentElement.classList.add("dark");
-  }
-})();
-`.trim();

@@ -2,10 +2,8 @@
 
 import {
   motion,
-  useMotionTemplate,
   useMotionValue,
   useReducedMotion,
-  useScroll,
   useSpring,
   useTransform,
 } from "motion/react";
@@ -31,43 +29,48 @@ export function Hero() {
   const reduced = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Pointer position drives the ambient spotlight — motion values only, so
-  // moving the mouse never re-renders the section.
-  const pointerX = useMotionValue(0.5);
-  const pointerY = useMotionValue(0.5);
+  /**
+   * Pointer position drives the ambient spotlight — motion values only, so
+   * moving the mouse never re-renders the section.
+   *
+   * These are pixel offsets rather than the 0-1 fractions used previously,
+   * because the spotlight is now *translated* instead of having its gradient
+   * re-declared. Rewriting a `radial-gradient` position per frame repaints a
+   * full-viewport layer; translating a fixed gradient is compositor-only.
+   */
+  const pointerX = useMotionValue(0);
+  const pointerY = useMotionValue(0);
   const smoothX = useSpring(pointerX, { stiffness: 60, damping: 22, mass: 0.6 });
   const smoothY = useSpring(pointerY, { stiffness: 60, damping: 22, mass: 0.6 });
 
-  const spotlightX = useTransform(smoothX, (v) => `${v * 100}%`);
-  const spotlightY = useTransform(smoothY, (v) => `${v * 100}%`);
-  const spotlight = useMotionTemplate`radial-gradient(680px circle at ${spotlightX} ${spotlightY}, var(--accent-glow), transparent 62%)`;
+  // Measured on enter, not per move: a rect read inside a mousemove handler
+  // forces a synchronous layout on every pointer event.
+  const bounds = useRef<DOMRect | null>(null);
 
   // Parallax drift for the floating badges, opposite to the pointer.
-  const driftX = useTransform(smoothX, [0, 1], [14, -14]);
-  const driftY = useTransform(smoothY, [0, 1], [10, -10]);
+  const driftX = useTransform(smoothX, (v) => 14 - (v / (bounds.current?.width || 1)) * 28);
+  const driftY = useTransform(smoothY, (v) => 10 - (v / (bounds.current?.height || 1)) * 20);
+
+  const measure = useCallback(() => {
+    if (reduced) return;
+    bounds.current = sectionRef.current?.getBoundingClientRect() ?? null;
+  }, [reduced]);
 
   const handlePointer = useCallback(
     (event: MouseEvent<HTMLElement>) => {
-      if (reduced || !sectionRef.current) return;
-      const rect = sectionRef.current.getBoundingClientRect();
-      pointerX.set((event.clientX - rect.left) / rect.width);
-      pointerY.set((event.clientY - rect.top) / rect.height);
+      const rect = bounds.current;
+      if (!rect) return;
+      pointerX.set(event.clientX - rect.left);
+      pointerY.set(event.clientY - rect.top);
     },
-    [pointerX, pointerY, reduced],
+    [pointerX, pointerY],
   );
-
-  // Gentle scroll parallax on the hero content.
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end start"],
-  });
-  const contentY = useTransform(scrollYProgress, [0, 1], [0, reduced ? 0 : 70]);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.8], [1, reduced ? 1 : 0.3]);
 
   return (
     <section
       id="home"
       ref={sectionRef}
+      onMouseEnter={measure}
       onMouseMove={handlePointer}
       aria-label="Introduction"
       className="noise-overlay relative isolate flex min-h-[100svh] flex-col justify-center overflow-hidden px-4 pt-28 pb-10 sm:px-6 sm:pt-32 lg:px-8 lg:pt-36"
@@ -79,28 +82,35 @@ export function Hero() {
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-56 left-1/2 -z-30 h-[620px] w-[min(1200px,150vw)] -translate-x-1/2 rounded-full aura opacity-80 blur-3xl dark:opacity-100"
+        className="pointer-events-none absolute -top-56 left-1/2 -z-30 h-[620px] w-[min(1200px,150vw)] -translate-x-1/2 rounded-full aura opacity-80 dark:opacity-100"
       />
       {!reduced && (
         <motion.div
           aria-hidden="true"
-          style={{ background: spotlight }}
-          className="pointer-events-none absolute inset-0 -z-20 hidden opacity-70 md:block"
-        />
+          style={{ x: smoothX, y: smoothY }}
+          className={cn(
+            "pointer-events-none absolute top-0 left-0 -z-20 hidden size-[1360px] opacity-70 md:block",
+            "-mt-[680px] -ml-[680px] will-change-transform",
+          )}
+        >
+          <div className="size-full glow-accent" />
+        </motion.div>
       )}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 bottom-0 -z-20 h-64 bg-linear-to-t from-base to-transparent"
       />
 
-      <motion.div
-        style={reduced ? undefined : { y: contentY, opacity: contentOpacity }}
-        className="mx-auto w-full max-w-7xl"
-      >
+      {/* Settles away as the reader scrolls past — a CSS view-progress
+          timeline, so it costs the main thread nothing. */}
+      <div className="hero-settle mx-auto w-full max-w-7xl">
         <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-10 xl:gap-16">
           {/* ---------------------------------------------------- Left column */}
-          <div className="lg:col-span-7 xl:col-span-6">
-            <Entrance delay={0.05} y={12}>
+          {/* min-w-0 on both columns: a grid item defaults to a minimum of
+              its own min-content, which lets one wide descendant widen the
+              whole track. */}
+          <div className="min-w-0 lg:col-span-7 xl:col-span-6">
+            <Entrance delay={0.04} y={12}>
               <div className="inline-flex items-center gap-2.5 rounded-full border border-line bg-surface/70 py-1.5 pr-4 pl-2 backdrop-blur-sm">
                 <span className="relative flex size-5 items-center justify-center">
                   <span
@@ -125,8 +135,8 @@ export function Hero() {
               <span aria-hidden="true">
               <TextReveal
                 text={site.name}
-                delay={0.15}
-                step={0.08}
+                delay={0.06}
+                step={0.05}
                 className={cn(
                   "block font-display font-semibold tracking-[-0.045em]",
                   "text-[clamp(2.75rem,12vw,4.25rem)] leading-[0.95]",
@@ -135,8 +145,8 @@ export function Hero() {
               />
               <TextReveal
                 text="Software Engineer"
-                delay={0.34}
-                step={0.06}
+                delay={0.14}
+                step={0.035}
                 className={cn(
                   "mt-1.5 block font-display font-semibold tracking-[-0.04em] sm:mt-2.5",
                   "text-[clamp(1.5rem,6.6vw,2.25rem)] leading-[1.05]",
@@ -146,8 +156,8 @@ export function Hero() {
               />
               <TextReveal
                 text="& Full-Stack Developer"
-                delay={0.44}
-                step={0.055}
+                delay={0.22}
+                step={0.04}
                 className={cn(
                   "block font-display font-semibold tracking-[-0.04em] text-ink-muted",
                   "text-[clamp(1.5rem,6.6vw,2.25rem)] leading-[1.15]",
@@ -157,16 +167,16 @@ export function Hero() {
               </span>
             </h1>
 
-            <Entrance delay={0.62}>
+            <Entrance delay={0.4}>
               <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-ink-muted text-pretty sm:mt-7 sm:text-[17px]">
                 {site.statement}
               </p>
             </Entrance>
 
-            <Entrance delay={0.72}>
+            <Entrance delay={0.48}>
               <div className="mt-8 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
                 <MagneticButton href="#projects" className="w-full sm:w-auto">
-                  View Projects
+                  View My Work
                   <ArrowRight
                     aria-hidden="true"
                     className="size-4 transition-transform duration-300 group-hover:translate-x-1"
@@ -178,7 +188,7 @@ export function Hero() {
                   external
                   variant="secondary"
                   className="w-full sm:w-auto"
-                  ariaLabel={`Download ${site.name}'s resume (PDF)`}
+                  ariaLabel={`Download Resume — ${site.name} (PDF)`}
                 >
                   <Download
                     aria-hidden="true"
@@ -201,7 +211,7 @@ export function Hero() {
               </div>
             </Entrance>
 
-            <Entrance delay={0.82}>
+            <Entrance delay={0.56}>
               <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-4 sm:mt-9">
                 <div className="flex items-center gap-2.5">
                   <IconLink href={site.github} label="GitHub profile">
@@ -233,8 +243,8 @@ export function Hero() {
           </div>
 
           {/* --------------------------------------------------- Right column */}
-          <div className="lg:col-span-5 xl:col-span-6">
-            <Entrance delay={0.4} y={26} duration={0.9}>
+          <div className="min-w-0 lg:col-span-5 xl:col-span-6">
+            <Entrance delay={0.26} y={26} duration={0.7}>
               <div className="relative mx-auto max-w-[560px] lg:max-w-none">
                 <TiltWrapper>
                   <CodePanel />
@@ -255,7 +265,7 @@ export function Hero() {
                     style={reduced ? undefined : { x: driftX, y: driftY }}
                     className={cn(
                       "absolute z-10 hidden rounded-full border border-line bg-surface/85 px-3 py-1.5",
-                      "font-mono text-[10.5px] tracking-tight text-ink-muted shadow-card backdrop-blur-md",
+                      "font-mono text-[10.5px] tracking-tight text-ink-muted shadow-card",
                       "sm:block",
                       index % 2 === 0
                         ? "motion-safe:animate-[floatSlow_9s_ease-in-out_infinite]"
@@ -270,7 +280,7 @@ export function Hero() {
                 {/* Glow beneath the panel */}
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute -inset-x-6 -bottom-8 -z-10 h-24 rounded-full bg-accent/25 blur-3xl dark:bg-accent/30"
+                  className="glow-accent pointer-events-none absolute -inset-x-10 -bottom-10 -z-10 h-32"
                 />
               </div>
             </Entrance>
@@ -278,7 +288,7 @@ export function Hero() {
         </div>
 
         {/* ------------------------------------------------------------ Stats */}
-        <Entrance delay={0.95}>
+        <Entrance delay={0.64}>
           <dl className="mt-14 grid grid-cols-3 gap-px overflow-hidden rounded-2xl border border-line bg-line sm:mt-16 lg:mt-20">
             {heroStats.map((stat) => (
               <div
@@ -298,10 +308,10 @@ export function Hero() {
             ))}
           </dl>
         </Entrance>
-      </motion.div>
+      </div>
 
       {/* --------------------------------------------------------- Tech rail */}
-      <Entrance delay={1.05} className="mt-12 sm:mt-14">
+      <Entrance delay={0.72} className="mt-12 sm:mt-14">
         <div className="mask-fade-x relative overflow-hidden">
           <div className="flex w-max motion-safe:animate-marquee motion-reduce:animate-none">
             {[0, 1].map((copy) => (
@@ -331,7 +341,7 @@ export function Hero() {
         initial={reduced ? false : { opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.4, duration: 0.6 }}
-        className="group mx-auto mt-10 hidden items-center gap-2 text-[11px] tracking-[0.18em] text-ink-subtle uppercase transition-colors hover:text-ink lg:inline-flex"
+        className="group mx-auto mt-10 hidden min-h-9 items-center gap-2 px-2 text-[11px] tracking-[0.18em] text-ink-subtle uppercase transition-colors hover:text-ink lg:inline-flex"
       >
         <span className="font-mono">Scroll</span>
         <span className="grid size-7 place-items-center rounded-full border border-line transition-colors group-hover:border-accent/60">

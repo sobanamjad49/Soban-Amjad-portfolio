@@ -46,7 +46,7 @@ export function AuraBackdrop({
       aria-hidden="true"
       className={cn(
         "pointer-events-none absolute -z-10 h-[520px] w-[min(1100px,140vw)] rounded-full",
-        "aura blur-3xl opacity-70 dark:opacity-100",
+        "aura opacity-70 dark:opacity-100",
         placement,
         className,
       )}

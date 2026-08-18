@@ -13,13 +13,14 @@ import { cn } from "@/lib/utils";
 export function Contact() {
   return (
     <section
+      data-cv="contact"
       id="contact"
       aria-labelledby="contact-heading"
       className="relative scroll-mt-24 overflow-hidden px-4 py-24 sm:px-6 sm:py-28 lg:px-8 lg:py-32"
     >
       <div className="mx-auto w-full max-w-7xl">
         <SectionHeading
-          index="08"
+          index="09"
           eyebrow="Contact"
           align="center"
           title={
@@ -66,7 +67,7 @@ function ContactCard() {
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-32 left-1/2 -z-10 h-64 w-[120%] -translate-x-1/2 rounded-full aura blur-3xl"
+        className="pointer-events-none absolute -top-32 left-1/2 -z-10 h-64 w-[120%] -translate-x-1/2 rounded-full aura"
       />
 
       <div className="relative flex flex-col items-center text-center">

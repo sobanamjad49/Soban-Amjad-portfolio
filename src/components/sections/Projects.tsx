@@ -1,5 +1,3 @@
-"use client";
-
 import { ProjectCard } from "@/components/sections/project/ProjectCard";
 import { Reveal } from "@/components/ui/Motion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -8,6 +6,7 @@ import { projects } from "@/data/projects";
 export function Projects() {
   return (
     <section
+      data-cv="projects"
       aria-labelledby="projects-heading"
       className="relative px-4 py-24 sm:px-6 sm:py-28 lg:px-8 lg:py-32"
     >

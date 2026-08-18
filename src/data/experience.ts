@@ -15,7 +15,10 @@ export type ExperienceEntry = {
  */
 export const experience: ExperienceEntry[] = [
   {
-    company: "Devsarch",
+    // The resume states only "SOFTWARE ENGINEER / 2023 - 2026 / REMOTE" with no
+    // employer, so there is no company to name. Null promotes the role to the
+    // card heading; "Remote" is already carried by `mode`.
+    company: null,
     role: "Software Engineer",
     period: "2023 — 2026",
     mode: "Remote",

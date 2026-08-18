@@ -1,39 +1,24 @@
-"use client";
-
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
 import { Reveal } from "@/components/ui/Motion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { principles } from "@/data/philosophy";
 import { cn } from "@/lib/utils";
 
 export function Philosophy() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const reduced = useReducedMotion();
-
-  // Slow counter-scroll on the backdrop text for depth.
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"],
-  });
-  const driftX = useTransform(scrollYProgress, [0, 1], ["-6%", "6%"]);
-
   return (
     <section
-      ref={sectionRef}
+      data-cv="philosophy"
       aria-labelledby="philosophy-heading"
       className="relative overflow-hidden border-y border-line bg-base-deep/40 px-4 py-24 sm:px-6 sm:py-28 lg:px-8 lg:py-32"
     >
-      {/* Oversized backdrop word — decorative, hidden from assistive tech. */}
-      {!reduced && (
-        <motion.span
-          aria-hidden="true"
-          style={{ x: driftX }}
-          className="pointer-events-none absolute inset-x-0 top-1/2 -z-10 hidden -translate-y-1/2 text-center font-display text-[22vw] leading-none font-bold tracking-tighter text-ink/[0.025] select-none lg:block dark:text-ink/[0.035]"
-        >
-          PRINCIPLES
-        </motion.span>
-      )}
+      {/* Oversized backdrop word — decorative, hidden from assistive tech.
+          The counter-scroll drift is a CSS view-progress timeline, so it runs
+          on the compositor rather than through a scroll listener. */}
+      <span
+        aria-hidden="true"
+        className="drift-x pointer-events-none absolute inset-x-0 top-1/2 -z-10 hidden -translate-y-1/2 [--drift-y:-50%] text-center font-display text-[22vw] leading-none font-semibold tracking-tighter text-ink/[0.025] select-none lg:block dark:text-ink/[0.035]"
+      >
+        PRINCIPLES
+      </span>
 
       <div className="mx-auto w-full max-w-7xl">
         <SectionHeading

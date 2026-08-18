@@ -19,7 +19,7 @@ export function Footer() {
           {/* Identity */}
           <div className="max-w-sm">
             <a href="#home" className="group inline-flex items-center gap-2.5">
-              <span className="grid size-9 place-items-center rounded-xl border border-line-strong bg-surface font-display text-[13px] font-bold tracking-tight">
+              <span className="grid size-9 place-items-center rounded-xl border border-line-strong bg-surface font-display text-[13px] font-semibold tracking-tight">
                 <span className="text-gradient">{site.initials}</span>
               </span>
               <span className="font-display text-base font-semibold tracking-tight">
@@ -45,7 +45,7 @@ export function Footer() {
                 <li key={item.id}>
                   <a
                     href={item.href}
-                    className="underline-sweep inline-block text-[14px] text-ink-muted transition-colors duration-300 hover:text-ink"
+                    className="underline-sweep inline-flex min-h-8 items-center text-[14px] text-ink-muted transition-colors duration-300 hover:text-ink"
                   >
                     {item.label}
                   </a>
@@ -65,7 +65,7 @@ export function Footer() {
                   href={site.github}
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="group inline-flex items-center gap-2.5 text-[14px] text-ink-muted transition-colors duration-300 hover:text-ink"
+                  className="group inline-flex min-h-8 items-center gap-2.5 text-[14px] text-ink-muted transition-colors duration-300 hover:text-ink"
                 >
                   <GithubIcon className="size-4 shrink-0 transition-transform duration-300 group-hover:scale-110" />
                   GitHub
@@ -76,7 +76,7 @@ export function Footer() {
                   href={site.linkedin}
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="group inline-flex items-center gap-2.5 text-[14px] text-ink-muted transition-colors duration-300 hover:text-ink"
+                  className="group inline-flex min-h-8 items-center gap-2.5 text-[14px] text-ink-muted transition-colors duration-300 hover:text-ink"
                 >
                   <LinkedinIcon className="size-4 shrink-0 transition-transform duration-300 group-hover:scale-110" />
                   LinkedIn
@@ -85,7 +85,7 @@ export function Footer() {
               <li>
                 <a
                   href={`mailto:${site.email}`}
-                  className="group inline-flex items-center gap-2.5 text-[14px] text-ink-muted transition-colors duration-300 hover:text-ink"
+                  className="group inline-flex min-h-8 items-center gap-2.5 text-[14px] text-ink-muted transition-colors duration-300 hover:text-ink"
                 >
                   <Mail
                     className="size-4 shrink-0 transition-transform duration-300 group-hover:scale-110"

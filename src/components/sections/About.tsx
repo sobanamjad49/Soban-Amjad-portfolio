@@ -1,8 +1,4 @@
-"use client";
-
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { Check, Layers, ShieldCheck, Workflow } from "lucide-react";
-import { useRef } from "react";
 import { GridBackdrop } from "@/components/ui/Backdrops";
 import { Reveal, Stagger, StaggerItem } from "@/components/ui/Motion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -30,30 +26,21 @@ const APPROACH = [
 ];
 
 export function About() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const reduced = useReducedMotion();
-
-  // Slow counter-drift on the decorative backdrop only.
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"],
-  });
-  const backdropY = useTransform(scrollYProgress, [0, 1], ["-6%", "6%"]);
-
   return (
     <section
+      data-cv="about"
       id="about"
-      ref={sectionRef}
       aria-labelledby="about-heading"
       className="relative scroll-mt-24 px-4 py-24 sm:px-6 sm:py-28 lg:px-8 lg:py-32"
     >
-      <motion.div
+      {/* Slow counter-drift on the decorative backdrop only — a CSS view
+          timeline, so it never touches the main thread. */}
+      <div
         aria-hidden="true"
-        style={reduced ? undefined : { y: backdropY }}
-        className="pointer-events-none absolute inset-0 -z-10"
+        className="drift-y pointer-events-none absolute inset-0 -z-10"
       >
         <GridBackdrop variant="dots" className="opacity-60" />
-      </motion.div>
+      </div>
 
       <div className="mx-auto w-full max-w-7xl">
         <SectionHeading
@@ -141,8 +128,6 @@ export function About() {
 }
 
 function CapabilityPanel() {
-  const reduced = useReducedMotion();
-
   return (
     <div className="lg:sticky lg:top-28">
       <div className="relative overflow-hidden rounded-3xl border border-line bg-surface p-1.5 shadow-card">
@@ -164,18 +149,10 @@ function CapabilityPanel() {
             </span>
           </div>
 
-          <ul className="mt-6 flex flex-col gap-2.5">
-            {aboutCapabilities.map((capability, index) => (
-              <motion.li
+          <ul data-stagger="" className="mt-6 flex flex-col gap-2.5 [--rv-step:60ms]">
+            {aboutCapabilities.map((capability) => (
+              <li
                 key={capability.label}
-                initial={reduced ? false : { opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-10% 0px" }}
-                transition={{
-                  duration: 0.55,
-                  delay: reduced ? 0 : index * 0.06,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
                 className={cn(
                   "group flex items-center gap-3 rounded-xl border border-transparent px-3 py-2.5",
                   "transition-all duration-400 hover:border-line hover:bg-surface",
@@ -188,7 +165,7 @@ function CapabilityPanel() {
                   <span className="block text-[14px] leading-tight font-medium tracking-tight">
                     {capability.label}
                   </span>
-                  <span className="mt-0.5 block truncate font-mono text-[10.5px] text-ink-subtle">
+                  <span className="mt-0.5 block font-mono text-[10.5px] leading-snug text-ink-subtle lg:truncate">
                     {capability.detail}
                   </span>
                 </span>
@@ -196,14 +173,14 @@ function CapabilityPanel() {
                   aria-hidden="true"
                   className="h-px w-0 bg-linear-to-r from-accent to-transparent transition-all duration-500 group-hover:w-6"
                 />
-              </motion.li>
+              </li>
             ))}
           </ul>
         </div>
 
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute -top-16 -right-16 size-40 rounded-full bg-accent/20 blur-3xl"
+          className="glow-accent pointer-events-none absolute -top-16 -right-16 size-40"
         />
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { CustomCursor } from "@/components/layout/CustomCursor";
+import { DeferredChrome } from "@/components/layout/DeferredChrome";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { ScrollProgress } from "@/components/layout/ScrollProgress";
@@ -7,6 +7,7 @@ import { Contact } from "@/components/sections/Contact";
 import { Credentials, Experience } from "@/components/sections/Experience";
 import { FeaturedProject } from "@/components/sections/FeaturedProject";
 import { Philosophy } from "@/components/sections/Philosophy";
+import { Process } from "@/components/sections/Process";
 import { Projects } from "@/components/sections/Projects";
 import { Services } from "@/components/sections/Services";
 import { Skills } from "@/components/sections/Skills";
@@ -22,7 +23,7 @@ export default function Home() {
     <>
       <ScrollProgress />
       <Navbar />
-      <CustomCursor />
+      <DeferredChrome />
 
       <main id="main" className="flex-1">
         <Hero />
@@ -34,6 +35,8 @@ export default function Home() {
         <Credentials />
         <FeaturedProject />
         <Projects />
+        <SectionDivider />
+        <Process />
         <Philosophy />
         <Services />
         <Contact />

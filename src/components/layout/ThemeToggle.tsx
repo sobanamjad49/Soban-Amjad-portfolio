@@ -1,27 +1,20 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
-import type { MouseEvent } from "react";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { cn } from "@/lib/utils";
 
 /**
  * The icon swap is pure CSS off the `dark` class — no state, no hydration
- * mismatch, and the crossfade happens even during the View Transition wipe.
+ * mismatch, and the crossfade rides the same 180ms token transition.
  */
 export function ThemeToggle({ className }: { className?: string }) {
   const { toggleTheme } = useTheme();
 
-  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-    // The click point seeds the circular reveal in ThemeProvider.
-    const rect = event.currentTarget.getBoundingClientRect();
-    toggleTheme({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
-  };
-
   return (
     <button
       type="button"
-      onClick={handleClick}
+      onClick={toggleTheme}
       aria-label="Toggle dark and light theme"
       title="Toggle theme"
       className={cn(

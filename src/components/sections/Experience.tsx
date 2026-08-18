@@ -1,30 +1,13 @@
-"use client";
-
-import { motion, useInView, useReducedMotion, useScroll, useSpring } from "motion/react";
 import { Award, Briefcase, GraduationCap, MapPin } from "lucide-react";
-import { useRef } from "react";
 import { Reveal, Stagger, StaggerItem } from "@/components/ui/Motion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { certifications, education, experience, type Credential } from "@/data/experience";
 import { cn } from "@/lib/utils";
 
 export function Experience() {
-  const reduced = useReducedMotion();
-  const timelineRef = useRef<HTMLDivElement>(null);
-
-  // The rail fills as the timeline passes through the middle of the viewport.
-  const { scrollYProgress } = useScroll({
-    target: timelineRef,
-    offset: ["start 78%", "end 60%"],
-  });
-  const railScale = useSpring(scrollYProgress, {
-    stiffness: 90,
-    damping: 26,
-    restDelta: 0.001,
-  });
-
   return (
     <section
+      data-cv="experience"
       id="experience"
       aria-labelledby="experience-heading"
       className="relative scroll-mt-24 px-4 py-24 sm:px-6 sm:py-28 lg:px-8 lg:py-32"
@@ -43,15 +26,14 @@ export function Experience() {
         />
 
         {/* ---------------------------------------------------------- Timeline */}
-        <div ref={timelineRef} className="relative mt-14 sm:mt-16">
+        <div className="relative mt-14 sm:mt-16">
           <div
             aria-hidden="true"
             className="absolute top-2 bottom-2 left-[15px] w-px bg-line sm:left-[19px]"
           >
-            <motion.div
-              className="timeline-line h-full w-full origin-top"
-              style={reduced ? { transform: "scaleY(1)" } : { scaleY: railScale }}
-            />
+            {/* Fills as the timeline is read. Driven by a CSS view-progress
+                timeline; where that is unsupported the rail is simply full. */}
+            <div className="timeline-line rail-fill h-full w-full origin-top" />
           </div>
 
           <ol className="flex flex-col gap-12">
@@ -65,49 +47,48 @@ export function Experience() {
   );
 }
 
+/**
+ * The node and card light up once the entry has been reached. This used to be
+ * a per-entry `useInView` that re-rendered the component on every scroll pass;
+ * it is now the same `.rv-in` class the shared observer already sets, read
+ * through a group variant, so scrolling causes no React work at all.
+ */
 function TimelineEntry({ entry }: { entry: (typeof experience)[number] }) {
-  const ref = useRef<HTMLLIElement>(null);
-  const reduced = useReducedMotion();
-  // "Active" while the entry occupies the reading band — drives the node glow.
-  const inView = useInView(ref, { margin: "-30% 0px -40% 0px" });
-  const active = reduced || inView;
-
   return (
-    <li ref={ref} className="relative pl-11 sm:pl-16">
+    <li data-reveal="up" data-reveal-soft="" className="group/entry relative pl-11 sm:pl-16">
       {/* Node */}
       <span
         aria-hidden="true"
         className={cn(
           "absolute top-1 left-0 grid size-8 place-items-center rounded-full border bg-base sm:size-10",
           "transition-[border-color,box-shadow] duration-700",
-          active
-            ? "border-accent/50 shadow-[0_0_0_6px_var(--accent-soft)]"
-            : "border-line",
+          "border-line group-[.rv-in]/entry:border-accent/50",
+          "group-[.rv-in]/entry:shadow-[0_0_0_6px_var(--accent-soft)]",
         )}
       >
         <span
           className={cn(
             "grid size-full place-items-center rounded-full transition-colors duration-700",
-            active ? "bg-accent-soft text-accent" : "bg-base-deep/60 text-ink-subtle",
+            "bg-base-deep/60 text-ink-subtle",
+            "group-[.rv-in]/entry:bg-accent-soft group-[.rv-in]/entry:text-accent",
           )}
         >
           <Briefcase className="size-3.5 sm:size-4" strokeWidth={1.75} />
         </span>
       </span>
 
-      <Reveal direction="up" soft>
-        <article
+      <article
           className={cn(
             "group relative overflow-hidden rounded-2xl border bg-surface p-5 shadow-card sm:p-7",
             "transition-[border-color,box-shadow] duration-700",
-            active ? "border-line-strong shadow-lift" : "border-line",
+            "border-line group-[.rv-in]/entry:border-line-strong group-[.rv-in]/entry:shadow-lift",
           )}
         >
           <span
             aria-hidden="true"
             className={cn(
               "pointer-events-none absolute inset-x-10 top-0 h-px bg-linear-to-r from-transparent via-accent/45 to-transparent transition-opacity duration-700",
-              active ? "opacity-100" : "opacity-0",
+              "opacity-0 group-[.rv-in]/entry:opacity-100",
             )}
           />
 
@@ -163,8 +144,7 @@ function TimelineEntry({ entry }: { entry: (typeof experience)[number] }) {
               </li>
             ))}
           </ul>
-        </article>
-      </Reveal>
+      </article>
     </li>
   );
 }
@@ -173,6 +153,7 @@ function TimelineEntry({ entry }: { entry: (typeof experience)[number] }) {
 export function Credentials() {
   return (
     <section
+      data-cv="credentials"
       aria-labelledby="credentials-heading"
       className="relative px-4 pb-24 sm:px-6 sm:pb-28 lg:px-8 lg:pb-32"
     >

@@ -1,6 +1,5 @@
 "use client";
 
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import {
   ArrowUpRight,
   ExternalLink,
@@ -11,7 +10,7 @@ import {
   TrendingUp,
   UserRound,
 } from "lucide-react";
-import { useRef, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import {
   ProjectMockup,
   VIEWS,
@@ -25,22 +24,12 @@ import { featuredProject } from "@/data/projects";
 import { cn } from "@/lib/utils";
 
 export function FeaturedProject() {
-  const reduced = useReducedMotion();
   const [hovered, setHovered] = useState(false);
   const { activeId, select } = useLayerRotation(hovered);
-  const mockupRef = useRef<HTMLDivElement>(null);
-
-  // The mockup settles into place as the section scrolls in.
-  const { scrollYProgress } = useScroll({
-    target: mockupRef,
-    offset: ["start 90%", "start 45%"],
-  });
-  const mockupY = useTransform(scrollYProgress, [0, 1], [48, 0]);
-  const mockupScale = useTransform(scrollYProgress, [0, 1], [0.95, 1]);
-  const mockupOpacity = useTransform(scrollYProgress, [0, 0.6], [0, 1]);
 
   return (
     <section
+      data-cv="featured"
       id="projects"
       aria-labelledby="featured-heading"
       className="relative scroll-mt-24 overflow-hidden px-4 py-24 sm:px-6 sm:py-28 lg:px-8 lg:py-32"
@@ -130,18 +119,15 @@ export function FeaturedProject() {
 
           {/* -------------------------------------------------------- Mockup */}
           <div className="lg:col-span-7">
-            <motion.div
-              ref={mockupRef}
-              style={
-                reduced
-                  ? undefined
-                  : { y: mockupY, scale: mockupScale, opacity: mockupOpacity }
-              }
+            {/* Settles into place as the section scrolls in — a CSS view
+                timeline rather than three scroll-linked motion values. */}
+            <div
+              className="mock-rise"
               onMouseEnter={() => setHovered(true)}
               onMouseLeave={() => setHovered(false)}
             >
               <ProjectMockup activeId={activeId} onSelect={select} />
-            </motion.div>
+            </div>
           </div>
         </div>
 
@@ -396,10 +382,8 @@ function CaseCard({
         <span
           aria-hidden="true"
           className={cn(
-            "pointer-events-none absolute -top-24 -right-16 size-48 rounded-full blur-3xl transition-opacity duration-700",
-            tone === "warning"
-              ? "bg-amber-500/10 group-hover:bg-amber-500/15"
-              : "bg-accent/15 group-hover:bg-accent/25",
+            "pointer-events-none absolute -top-24 -right-16 size-48 opacity-70 transition-opacity duration-700 group-hover:opacity-100",
+            tone === "warning" ? "glow-amber" : "glow-accent",
           )}
         />
         <div className="flex items-center gap-3">

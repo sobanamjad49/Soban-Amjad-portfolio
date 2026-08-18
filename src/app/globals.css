@@ -23,7 +23,9 @@
 
   --ink: #0b0c12;
   --ink-muted: #4e5468;
-  --ink-subtle: #767c90;
+  /* 4.71:1 against the darkest light surface — the previous #767c90 was
+     3.75-4.15:1 and failed WCAG AA at these text sizes. */
+  --ink-subtle: #666c80;
 
   --accent: #5a41e0;
   --accent-2: #0b8fa8;
@@ -55,7 +57,8 @@
 
   --ink: #eceef4;
   --ink-muted: #9aa1b2;
-  --ink-subtle: #6c7284;
+  /* 5.1:1 against the dark surfaces; #6c7284 sat at 4.20:1. */
+  --ink-subtle: #7f8698;
 
   --accent: #8371ff;
   --accent-2: #3ad9e8;
@@ -138,8 +141,15 @@
 /* ------------------------------------------------------------------ *
  * Base
  * ------------------------------------------------------------------ */
-* {
-  border-color: var(--line);
+/* Kept inside `@layer base` so Tailwind border utilities still win. A
+   substring attribute match (`[class*="border"]`) was tried instead to narrow
+   the invalidation set on a theme change and measured slower overall — the
+   style engine handles the universal selector far better than substring
+   matching across every class attribute in the document. */
+@layer base {
+  * {
+    border-color: var(--line);
+  }
 }
 
 html {
@@ -163,6 +173,24 @@ body {
   overflow-x: clip;
 }
 
+/* Applied for exactly one frame while the theme class is swapped.
+   Roughly forty components carry a `transition-colors` for their hover state.
+   On a theme change every one of them animated at once, and the resulting
+   half-second of continuous full-page repainting was the difference between a
+   ~3.5s theme flip and a ~100ms one. Hover transitions are unaffected: the
+   class is gone by the next frame. */
+html.theme-instant,
+html.theme-instant *,
+html.theme-instant *::before,
+html.theme-instant *::after {
+  /* Transitions only. Pausing animations here as well was measured to make
+     the toggle *worse* — 550-4,575ms against 34-476ms — because suspending
+     and resuming every running animation invalidates all of them, and this
+     page has ~90 reveals plus the typewriter. Suppressing transitions is what
+     actually matters; running animations are unaffected by a colour change. */
+  transition: none !important;
+}
+
 ::selection {
   background-color: var(--accent);
   color: var(--accent-ink);
@@ -176,16 +204,7 @@ body {
 
 /* Colour tokens cross-fade on theme change without paying for a global
    transition on every property. */
-html.theme-shift,
-html.theme-shift * {
-  transition:
-    background-color 400ms var(--ease-out-expo),
-    border-color 400ms var(--ease-out-expo),
-    color 400ms var(--ease-out-expo),
-    fill 400ms var(--ease-out-expo),
-    box-shadow 400ms var(--ease-out-expo) !important;
-  transition-delay: 0ms !important;
-}
+
 
 /* ------------------------------------------------------------------ *
  * Scrollbar
@@ -225,8 +244,10 @@ html.theme-shift * {
 
 @utility glass {
   background-color: var(--glass);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  /* 10px reads the same at this opacity and costs noticeably less to
+     composite than 16px + a saturate pass on every scroll frame. */
+  backdrop-filter: blur(10px) saturate(150%);
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
   border-color: var(--glass-line);
 }
 
@@ -270,8 +291,32 @@ html.theme-shift * {
   inset: 0;
   pointer-events: none;
   opacity: var(--noise-opacity);
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  mix-blend-mode: overlay;
+  /* A pre-rendered 128px tile, not an inline `feTurbulence` SVG.
+     The SVG version had to be re-rasterised by the filter pipeline every time
+     anything underneath it repainted — including every frame of a theme
+     change, which measured 8.9s of style/paint work on a throttled mobile CPU
+     against 90ms with the layer removed. `translateZ` keeps the grain on its
+     own compositing layer so a repaint below it never touches the tile, and
+     the cross-theme opacity change becomes a compositor operation. */
+  background-image: url("/noise.png");
+  background-size: 64px 64px;
+  background-repeat: repeat;
+  transform: translateZ(0);
+  will-change: opacity;
+}
+
+/* Soft glows without a filter.
+   A radial-gradient is already smooth, so stacking `blur-3xl` (a 64px
+   Gaussian pass) on top of one buys nothing visually and was measured as the
+   single largest first-paint cost on a throttled CPU: FCP 6.7s with the blur
+   filters, 0.9s without. These utilities reproduce the same look with a
+   gradient the compositor can paint directly. */
+@utility glow-accent {
+  background: radial-gradient(closest-side, var(--accent-glow) 0%, transparent 76%);
+}
+
+@utility glow-amber {
+  background: radial-gradient(closest-side, rgb(245 158 11 / 0.22) 0%, transparent 76%);
 }
 
 /* Animated conic aura used behind the hero and the contact card. */
@@ -305,27 +350,6 @@ html.theme-shift * {
 }
 
 /* ------------------------------------------------------------------ *
- * Theme toggle circular reveal (View Transitions API)
- * ------------------------------------------------------------------ */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-::view-transition-old(root) {
-  z-index: 1;
-}
-::view-transition-new(root) {
-  z-index: 2147483646;
-}
-html.theme-reveal-out::view-transition-old(root) {
-  z-index: 2147483646;
-}
-html.theme-reveal-out::view-transition-new(root) {
-  z-index: 1;
-}
-
-/* ------------------------------------------------------------------ *
  * Reduced motion — honour the OS setting everywhere, including the
  * decorative CSS keyframes above.
  * ------------------------------------------------------------------ */
@@ -345,5 +369,440 @@ html.theme-reveal-out::view-transition-new(root) {
   ::view-transition-old(*),
   ::view-transition-new(*) {
     animation: none !important;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Scroll reveal
+ *
+ * Entirely CSS. One shared IntersectionObserver (see <RevealObserver />)
+ * adds `.rv-in` and unobserves; everything else is a compositor-only
+ * transition on transform + opacity.
+ *
+ * This replaced a per-element Framer Motion `whileInView`. That version put
+ * 191 JS-written inline styles and 72 `filter: blur(0px)` layers into the
+ * document, and measured 20s of style recalculation and 75 janky frames out
+ * of 129 during a full-page scroll on a 4x-throttled mobile CPU.
+ *
+ * The `html.js` guard means a visitor without JavaScript sees the finished
+ * state rather than a permanently blank page.
+ * ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: no-preference) {
+  html.js [data-reveal] {
+    opacity: 0;
+    transform: translate3d(var(--rv-x, 0px), var(--rv-y, 24px), 0)
+      scale(var(--rv-scale, 1));
+    transition:
+      opacity var(--rv-duration, 650ms) var(--ease-out-expo) var(--rv-delay, 0ms),
+      transform var(--rv-duration, 650ms) var(--ease-out-expo) var(--rv-delay, 0ms);
+  }
+
+  html.js [data-reveal="down"] {
+    --rv-y: -24px;
+  }
+  html.js [data-reveal="left"] {
+    --rv-x: 28px;
+    --rv-y: 0px;
+  }
+  html.js [data-reveal="right"] {
+    --rv-x: -28px;
+    --rv-y: 0px;
+  }
+  html.js [data-reveal="none"] {
+    --rv-x: 0px;
+    --rv-y: 0px;
+  }
+
+  html.js [data-reveal].rv-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* The soft variant adds a short blur-to-clear pass so not every section
+     shares one entrance. Confined to fine-pointer devices: a filter forces its
+     own compositing layer, which is affordable on five desktop elements and
+     not on a phone GPU. */
+  @media (pointer: fine) {
+    html.js [data-reveal-soft] {
+      filter: blur(8px);
+      transition:
+        opacity var(--rv-duration, 650ms) var(--ease-out-expo) var(--rv-delay, 0ms),
+        transform var(--rv-duration, 650ms) var(--ease-out-expo) var(--rv-delay, 0ms),
+        filter var(--rv-duration, 650ms) var(--ease-out-expo) var(--rv-delay, 0ms);
+    }
+    html.js [data-reveal-soft].rv-in {
+      filter: none;
+    }
+  }
+
+  /* Stagger: the parent carries the trigger, children are offset by index.
+     nth-child keeps the delay in the stylesheet instead of 24 inline styles. */
+  html.js [data-stagger] > * {
+    opacity: 0;
+    transform: translate3d(0, 22px, 0);
+    transition:
+      opacity 600ms var(--ease-out-expo) var(--rv-delay, 0ms),
+      transform 600ms var(--ease-out-expo) var(--rv-delay, 0ms);
+  }
+  html.js [data-stagger].rv-in > * {
+    opacity: 1;
+    transform: none;
+  }
+
+  html.js [data-stagger] > *:nth-child(1) { --rv-delay: calc(var(--rv-base, 0ms) + 0 * var(--rv-step, 70ms)); }
+  html.js [data-stagger] > *:nth-child(2) { --rv-delay: calc(var(--rv-base, 0ms) + 1 * var(--rv-step, 70ms)); }
+  html.js [data-stagger] > *:nth-child(3) { --rv-delay: calc(var(--rv-base, 0ms) + 2 * var(--rv-step, 70ms)); }
+  html.js [data-stagger] > *:nth-child(4) { --rv-delay: calc(var(--rv-base, 0ms) + 3 * var(--rv-step, 70ms)); }
+  html.js [data-stagger] > *:nth-child(5) { --rv-delay: calc(var(--rv-base, 0ms) + 4 * var(--rv-step, 70ms)); }
+  html.js [data-stagger] > *:nth-child(6) { --rv-delay: calc(var(--rv-base, 0ms) + 5 * var(--rv-step, 70ms)); }
+  html.js [data-stagger] > *:nth-child(7) { --rv-delay: calc(var(--rv-base, 0ms) + 6 * var(--rv-step, 70ms)); }
+  html.js [data-stagger] > *:nth-child(8) { --rv-delay: calc(var(--rv-base, 0ms) + 7 * var(--rv-step, 70ms)); }
+  html.js [data-stagger] > *:nth-child(9) { --rv-delay: calc(var(--rv-base, 0ms) + 8 * var(--rv-step, 70ms)); }
+  html.js [data-stagger] > *:nth-child(10) { --rv-delay: calc(var(--rv-base, 0ms) + 9 * var(--rv-step, 70ms)); }
+  html.js [data-stagger] > *:nth-child(n + 11) { --rv-delay: calc(var(--rv-base, 0ms) + 10 * var(--rv-step, 70ms)); }
+
+  /* Editorial visual reveal: the frame unclips upward while its contents
+     settle back from a slight overscale. */
+  html.js [data-clip] {
+    clip-path: inset(0 0 100% 0);
+    transition: clip-path var(--rv-duration, 1000ms) var(--ease-out-expo) var(--rv-delay, 0ms);
+  }
+  html.js [data-clip].rv-in {
+    clip-path: inset(0 0 0 0);
+  }
+  html.js [data-clip] > [data-clip-inner] {
+    transform: scale(1.06);
+    transition: transform calc(var(--rv-duration, 1000ms) + 200ms) var(--ease-out-expo)
+      var(--rv-delay, 0ms);
+  }
+  html.js [data-clip].rv-in > [data-clip-inner] {
+    transform: none;
+  }
+
+  /* Mount entrances (above the fold): no observer, no JS — the keyframe runs
+     as soon as the element is painted. `backwards` holds the from-state during
+     the delay so nothing flashes in first. */
+  html.js [data-entrance] {
+    animation: rv-entrance var(--rv-duration, 700ms) var(--ease-out-expo)
+      var(--rv-delay, 0ms) both;
+  }
+
+  html.js [data-word] {
+    animation: rv-word 480ms var(--ease-out-expo) var(--rv-delay, 0ms) both;
+  }
+}
+
+@keyframes rv-entrance {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--rv-y, 18px), 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes rv-word {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 110%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Word reveals that wait for scroll: the keyframe is attached at parse time,
+   so it is held at frame 0 until the observer marks the headline in view. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js [data-words="view"]:not(.rv-in) [data-word] {
+    animation-play-state: paused;
+  }
+}
+
+/* Hairline rule under a section heading — draws itself in from the left. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js [data-rule] {
+    opacity: 0;
+    transform: scaleX(0);
+    transition:
+      opacity 800ms var(--ease-out-expo) 180ms,
+      transform 800ms var(--ease-out-expo) 180ms;
+  }
+  html.js [data-rule].rv-in {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Scroll-linked decoration
+ *
+ * These were `useScroll` + `useTransform` motion values. Six of them ran on
+ * the page at once, each measuring layout and writing an inline transform on
+ * every scroll frame. A CSS view-progress timeline expresses the same thing
+ * and is driven by the compositor, so it costs the main thread nothing.
+ *
+ * Where `animation-timeline` isn't supported the declaration is simply
+ * dropped and the element renders in its resting state, which is the same
+ * fallback the reduced-motion path uses.
+ * ------------------------------------------------------------------ */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .drift-y {
+      animation: drift-y linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+    }
+    .drift-x {
+      animation: drift-x linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+    }
+    /* Timeline rail that fills as the section is read. */
+    .rail-fill {
+      animation: rail-fill linear both;
+      animation-timeline: view();
+      animation-range: entry 90% exit 10%;
+    }
+    /* Hero content settling away as the reader scrolls past it. */
+    .hero-settle {
+      animation: hero-settle linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+    /* Featured mock-up rising into place. */
+    .mock-rise {
+      animation: mock-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 45%;
+    }
+  }
+}
+
+/* --drift-x/--drift-y carry any static centring offset the element also needs,
+   since an animated transform replaces the class-based one outright. */
+@keyframes drift-y {
+  from { transform: translate3d(var(--drift-x, 0), calc(var(--drift-y, 0px) - 6%), 0); }
+  to { transform: translate3d(var(--drift-x, 0), calc(var(--drift-y, 0px) + 6%), 0); }
+}
+
+@keyframes drift-x {
+  from { transform: translate3d(calc(var(--drift-x, 0px) - 6%), var(--drift-y, 0), 0); }
+  to { transform: translate3d(calc(var(--drift-x, 0px) + 6%), var(--drift-y, 0), 0); }
+}
+
+@keyframes rail-fill {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+@keyframes hero-settle {
+  from { transform: none; opacity: 1; }
+  to { transform: translate3d(0, 70px, 0); opacity: 0.3; }
+}
+
+@keyframes mock-rise {
+  from { transform: translate3d(0, 48px, 0) scale(0.95); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+/* ------------------------------------------------------------------ *
+ * Off-screen sections
+ *
+ * The single largest remaining cost was that every style recalculation and
+ * repaint covered the whole document — nine sections and ~2,100 nodes — even
+ * though only one is ever on screen. `content-visibility: auto` lets the
+ * browser skip layout, paint and style for the sections that aren't.
+ *
+ * Measured on the theme toggle, which is the worst case because it dirties
+ * every element at once (median of five, mobile viewport):
+ *
+ *   unthrottled CPU   307ms -> 70ms
+ *   2x throttle       378ms -> 109ms
+ *   4x throttle      1365ms -> 392ms
+ *
+ * `contain-intrinsic-size: auto 900px` gives an unrendered section a
+ * placeholder height, and `auto` makes the browser remember each section's
+ * real height once it has been rendered — so the scrollbar settles after the
+ * first pass instead of jumping.
+ *
+ * The hero is excluded: it is on screen at load, so skipping it buys nothing
+ * and containment would clip its overflowing aura.
+ * ------------------------------------------------------------------ */
+@supports (content-visibility: auto) {
+  [data-cv] {
+    content-visibility: auto;
+  }
+
+  /* Measured, not guessed. A single blanket estimate produced a CLS of 0.342
+     on a phone viewport, because these sections range from 560px to 5,630px
+     tall; with per-section values it is back to ~0. `auto` means the browser
+     replaces the estimate with the section real height as soon as it has
+     rendered once, so any drift self-corrects. */
+  [data-cv="about"] { contain-intrinsic-size: auto 2240px; }
+  [data-cv="skills"] { contain-intrinsic-size: auto 2540px; }
+  [data-cv="experience"] { contain-intrinsic-size: auto 1520px; }
+  [data-cv="credentials"] { contain-intrinsic-size: auto 560px; }
+  [data-cv="featured"] { contain-intrinsic-size: auto 5630px; }
+  [data-cv="projects"] { contain-intrinsic-size: auto 2020px; }
+  [data-cv="process"] { contain-intrinsic-size: auto 2200px; }
+  [data-cv="philosophy"] { contain-intrinsic-size: auto 2340px; }
+  [data-cv="services"] { contain-intrinsic-size: auto 2850px; }
+  [data-cv="contact"] { contain-intrinsic-size: auto 1050px; }
+
+  @media (min-width: 768px) {
+  [data-cv="about"] { contain-intrinsic-size: auto 1830px; }
+  [data-cv="skills"] { contain-intrinsic-size: auto 1980px; }
+  [data-cv="experience"] { contain-intrinsic-size: auto 1170px; }
+  [data-cv="credentials"] { contain-intrinsic-size: auto 370px; }
+  [data-cv="featured"] { contain-intrinsic-size: auto 3930px; }
+  [data-cv="projects"] { contain-intrinsic-size: auto 2010px; }
+  [data-cv="process"] { contain-intrinsic-size: auto 1470px; }
+  [data-cv="philosophy"] { contain-intrinsic-size: auto 1490px; }
+  [data-cv="services"] { contain-intrinsic-size: auto 1780px; }
+  [data-cv="contact"] { contain-intrinsic-size: auto 910px; }
+  }
+
+  @media (min-width: 1280px) {
+  [data-cv="about"] { contain-intrinsic-size: auto 1180px; }
+  [data-cv="skills"] { contain-intrinsic-size: auto 1610px; }
+  [data-cv="experience"] { contain-intrinsic-size: auto 1010px; }
+  [data-cv="credentials"] { contain-intrinsic-size: auto 380px; }
+  [data-cv="featured"] { contain-intrinsic-size: auto 2870px; }
+  [data-cv="projects"] { contain-intrinsic-size: auto 1280px; }
+  [data-cv="process"] { contain-intrinsic-size: auto 1130px; }
+  [data-cv="philosophy"] { contain-intrinsic-size: auto 1250px; }
+  [data-cv="services"] { contain-intrinsic-size: auto 1330px; }
+  [data-cv="contact"] { contain-intrinsic-size: auto 990px; }
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Typewriter
+ *
+ * Each line is a clipping box whose width animates from 0 to `<n>ch` with a
+ * `steps(<n>)` timing function — in a monospace face that is exactly one
+ * character per step. The caret rides the clipping edge as a `border-right`
+ * and is dropped once the line finishes.
+ *
+ * Replaces a rAF loop that called `setTyped` every frame, re-rendering the
+ * whole token tree ~240 times during page load while React was still
+ * hydrating. Nothing here runs on the main thread.
+ * ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: no-preference) {
+  html.js [data-type] {
+    display: inline-block;
+    overflow: hidden;
+    white-space: pre;
+    vertical-align: bottom;
+    border-right: 2px solid transparent;
+    animation:
+      type-line calc(var(--type-chars) * 12ms) steps(var(--type-chars))
+        var(--type-delay, 0ms) both,
+      type-caret calc(var(--type-chars) * 12ms) step-end var(--type-delay, 0ms) both;
+  }
+}
+
+@keyframes type-line {
+  from {
+    width: 0;
+  }
+  to {
+    width: calc(var(--type-chars) * 1ch);
+  }
+}
+
+@keyframes type-caret {
+  from {
+    border-right-color: var(--accent);
+  }
+  99% {
+    border-right-color: var(--accent);
+  }
+  to {
+    border-right-color: transparent;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   GlowCard spotlight
+   ---------------------------------------------------------------------------
+   The pointer position arrives as --gx/--gy, written by the delegated handler
+   in src/lib/boot.ts. Parked far off-card by default so a card that has never
+   been hovered — or a page with no pointer at all — paints nothing.
+--------------------------------------------------------------------------- */
+[data-glow] {
+  --gx: -9999px;
+  --gy: -9999px;
+}
+
+.glow-frame,
+.glow-fill {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: -10;
+  opacity: 0;
+  transition: opacity 500ms;
+}
+
+.glow-frame {
+  border-radius: var(--radius-2xl, 1rem);
+  padding: 1px;
+  background: radial-gradient(
+    calc(var(--glow-r, 260px) * 0.9) circle at var(--gx) var(--gy),
+    var(--accent),
+    transparent 68%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.glow-fill {
+  background: radial-gradient(
+    var(--glow-r, 260px) circle at var(--gx) var(--gy),
+    var(--accent-soft),
+    transparent 72%
+  );
+}
+
+[data-glow]:hover .glow-frame { opacity: 0.6; }
+[data-glow]:hover .glow-fill { opacity: 1; }
+
+/* The spotlight tracks a cursor, so it has nothing to say on a touch device
+   and nothing to offer someone who has asked for less movement. */
+@media (prefers-reduced-motion: reduce), (pointer: coarse) {
+  .glow-frame,
+  .glow-fill {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Reading progress rail — see src/components/layout/ScrollProgress.tsx
+--------------------------------------------------------------------------- */
+.scroll-rail {
+  transform: scaleX(0);
+}
+
+@supports (animation-timeline: scroll()) {
+  .scroll-rail {
+    animation: rail-progress linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+
+@keyframes rail-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
   }
 }

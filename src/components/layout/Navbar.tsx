@@ -24,6 +24,10 @@ export function Navbar() {
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const lastY = useRef(0);
+  // Clicking an in-page link starts a smooth scroll *downwards*, which would
+  // otherwise trip the hide-on-scroll-down rule and pull the bar out from
+  // under the pointer mid-journey. Hold it visible until the scroll settles.
+  const revealLockUntil = useRef(0);
   const menuId = useId();
   const triggerRef = useRef<HTMLButtonElement>(null);
 
@@ -38,17 +42,27 @@ export function Navbar() {
     // Hide on downward scroll once past the hero, reveal immediately on the
     // way back up — keeps the reading area clear without hiding navigation.
     const delta = current - lastY.current;
-    if (!menuOpen) {
+    if (!menuOpen && Date.now() > revealLockUntil.current) {
       if (current > 520 && delta > 6) setHidden(true);
       else if (delta < -6 || current < 240) setHidden(false);
     }
     lastY.current = current;
   });
 
+  const holdNavVisible = useCallback(() => {
+    revealLockUntil.current = Date.now() + 1200;
+    setHidden(false);
+  }, []);
+
   const closeMenu = useCallback(() => {
     setMenuOpen(false);
     triggerRef.current?.focus();
   }, []);
+
+  const closeMenuAndHold = useCallback(() => {
+    holdNavVisible();
+    closeMenu();
+  }, [holdNavVisible, closeMenu]);
 
   // Escape closes the overlay; the trigger regains focus.
   useEffect(() => {
@@ -92,10 +106,10 @@ export function Navbar() {
         >
           <a
             href="#home"
-            aria-label={`${site.name} — back to top`}
+            onClick={holdNavVisible}
             className="group flex items-center gap-2.5 rounded-full"
           >
-            <span className="relative grid size-9 place-items-center rounded-xl border border-line-strong bg-surface font-display text-[13px] font-bold tracking-tight">
+            <span className="relative grid size-9 place-items-center rounded-xl border border-line-strong bg-surface font-display text-[13px] font-semibold tracking-tight">
               <span className="text-gradient">{site.initials}</span>
               <span
                 aria-hidden="true"
@@ -105,6 +119,12 @@ export function Navbar() {
             <span className="hidden text-sm font-medium tracking-tight sm:inline">
               {site.name}
             </span>
+            {/* The name is only visible from `sm` up, and an `aria-label`
+                here would replace the visible "SA" rather than extend it —
+                which trips the label-in-name check. Composing the name from
+                real content keeps both readings consistent. */}
+            <span className="sr-only sm:hidden">{site.name}</span>
+            <span className="sr-only">— back to top</span>
           </a>
 
           {/* Desktop navigation */}
@@ -124,6 +144,7 @@ export function Navbar() {
                 >
                   <a
                     href={item.href}
+                    onClick={holdNavVisible}
                     aria-current={isActive ? "true" : undefined}
                     className={cn(
                       "relative block rounded-full px-3.5 py-2 text-[13px] font-medium transition-colors duration-300",
@@ -205,6 +226,7 @@ export function Navbar() {
         open={menuOpen}
         active={active}
         onClose={closeMenu}
+        onNavigate={closeMenuAndHold}
         reduced={Boolean(reduced)}
       />
     </>
@@ -216,12 +238,14 @@ function MobileMenu({
   open,
   active,
   onClose,
+  onNavigate,
   reduced,
 }: {
   id: string;
   open: boolean;
   active: string;
   onClose: () => void;
+  onNavigate: () => void;
   reduced: boolean;
 }) {
   return (
@@ -269,7 +293,7 @@ function MobileMenu({
                   >
                     <a
                       href={item.href}
-                      onClick={onClose}
+                      onClick={onNavigate}
                       aria-current={active === item.id ? "true" : undefined}
                       className={cn(
                         "group flex items-center justify-between rounded-2xl px-4 py-3.5 text-base font-medium transition-colors duration-300",
