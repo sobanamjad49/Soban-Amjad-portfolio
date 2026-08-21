@@ -17,7 +17,7 @@ test.describe("page shell", () => {
     await page.goto("/");
 
     await expect(page).toHaveTitle(
-      "Soban Amjad — Software Engineer & Full-Stack Developer",
+      "Soban Amjad — Full Stack Engineer",
     );
     const description = await page
       .locator('meta[name="description"]')
@@ -362,7 +362,9 @@ test.describe("layout integrity", () => {
             y += 400;
             window.scrollTo(0, y);
             n += 1;
-            if (n < 60 && y < document.body.scrollHeight) requestAnimationFrame(step);
+            // The cap only guards against a runaway loop — the sweep has to
+            // reach the true bottom or it reports reveals it never visited.
+            if (n < 300 && y < document.body.scrollHeight) requestAnimationFrame(step);
             else resolve();
           };
           requestAnimationFrame(step);

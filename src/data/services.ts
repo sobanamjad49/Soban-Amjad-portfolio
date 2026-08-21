@@ -2,9 +2,11 @@ import {
   Cloud,
   Database,
   Fingerprint,
+  FlaskConical,
   Gauge,
   Layers,
   Network,
+  Radio,
   type LucideIcon,
 } from "lucide-react";
 
@@ -33,9 +35,9 @@ export const services: Service[] = [
     title: "API Development",
     description: "Robust backend services and RESTful APIs.",
     detail:
-      "Backend services and REST endpoints built with Node.js, NestJS and Express.js, structured for scale and tested through Postman.",
+      "Backend services and REST, GraphQL and tRPC endpoints built with Node.js, NestJS and Express, structured for scale and owned from architecture through production.",
     icon: Network,
-    points: ["NestJS & Express.js", "REST API design", "Postman testing"],
+    points: ["NestJS & Express", "REST & GraphQL", "tRPC"],
   },
   {
     title: "Database Design",
@@ -60,6 +62,22 @@ export const services: Service[] = [
       "Profiling and optimising application performance, caching frequently accessed data with Redis, and resolving complex technical issues in production code.",
     icon: Gauge,
     points: ["Redis caching", "Query optimisation", "Production debugging"],
+  },
+  {
+    title: "Real-Time & Event-Driven Systems",
+    description: "Microservices that talk to each other as things happen.",
+    detail:
+      "Event-driven services with real-time communication over WebSockets, SSE and message queues, with Redis in the middle — designed for scalability and low latency.",
+    icon: Radio,
+    points: ["WebSockets & SSE", "Message queues", "Microservices"],
+  },
+  {
+    title: "Testing & Quality",
+    description: "Confidence before release, not after.",
+    detail:
+      "Playwright end-to-end and integration coverage built into the pipeline — the approach that took one platform's E2E coverage from 5% to 70% and cut production regressions.",
+    icon: FlaskConical,
+    points: ["Playwright E2E", "Integration testing", "CI/CD pipelines"],
   },
   {
     title: "Cloud & Deployment",

@@ -21,9 +21,7 @@ export type ProcessStage = {
  * How the work actually runs, stage by stage.
  *
  * Every stage — and in particular every tool named in it — traces back to a
- * line on the résumé. Notably, "Verify" says API testing in Postman and code
- * review rather than an automated test suite, because a test framework is not
- * something the résumé claims.
+ * line on the résumé.
  */
 export const processStages: ProcessStage[] = [
   {
@@ -47,15 +45,15 @@ export const processStages: ProcessStage[] = [
     title: "Build",
     summary:
       "Implement across the stack — responsive interfaces, REST APIs with authentication and third-party integrations, and the relational or document schema underneath them.",
-    tools: ["Next.js", "React.js", "NestJS", "Node.js", "Express.js"],
+    tools: ["Next.js", "React", "NestJS", "Node.js", "tRPC"],
     icon: Code2,
   },
   {
     step: "04",
     title: "Verify",
     summary:
-      "Exercise endpoints directly while building them, and keep changes reviewable — small, readable commits over a shared branch history.",
-    tools: ["Postman", "Git", "GitHub"],
+      "Cover the paths that matter with Playwright end-to-end and integration tests, and keep changes reviewable — small, readable commits over a shared branch history.",
+    tools: ["Playwright", "Integration tests", "Git", "GitHub"],
     icon: TestTube,
   },
   {

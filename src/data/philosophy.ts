@@ -78,12 +78,12 @@ export type AboutCapability = {
 
 /** Drawn from the résumé's technical skills and experience bullets. */
 export const aboutCapabilities: AboutCapability[] = [
-  { label: "Full-Stack Development", detail: "React.js · Next.js · Node.js" },
-  { label: "REST API Design", detail: "NestJS · Express.js · Postman" },
-  { label: "Database Design", detail: "PostgreSQL · MongoDB · MySQL · Prisma" },
-  { label: "Authentication", detail: "Secure authentication & authorization" },
-  { label: "Third-Party Integrations", detail: "External services & payments" },
-  { label: "Cloud Infrastructure", detail: "Docker · Google Cloud · Vercel" },
-  { label: "Performance", detail: "Redis caching · optimisation" },
-  { label: "Collaboration", detail: "Git · GitHub · code review" },
+  { label: "Full-Stack Development", detail: "React · Next.js · Node.js" },
+  { label: "API Design", detail: "NestJS · REST · GraphQL · tRPC" },
+  { label: "Database Design", detail: "PostgreSQL · MongoDB · Supabase · Prisma" },
+  { label: "Authentication", detail: "SSO · row-level security · access control" },
+  { label: "Real-Time Systems", detail: "WebSockets · SSE · message queues" },
+  { label: "AI & LLM Workflows", detail: "RAG pipelines · vector databases" },
+  { label: "Cloud Infrastructure", detail: "Docker · Kubernetes · AWS · GCP" },
+  { label: "Testing & Quality", detail: "Playwright E2E · integration testing" },
 ];
