@@ -7,19 +7,22 @@
 export const site = {
   name: "Soban Amjad",
   initials: "SA",
-  role: "Software Engineer & Full-Stack Developer",
-  shortRole: "Software Engineer",
+  role: "Full Stack Engineer",
+  shortRole: "Full Stack Engineer",
+  /**
+   * The résumé header gives the location as "Asia"; the current role is listed
+   * as "Onsite, Lahore", which is the more specific of the two facts it states.
+   */
   location: "Lahore, Pakistan",
-  workMode: "Remote",
-  /** Résumé header line. */
-  headline: "Software Engineer | Full Stack Developer",
+  workMode: "Onsite",
+  /** Current title on the résumé. */
+  headline: "Full Stack Engineer",
   /** Condensed from the résumé's professional summary. */
   statement:
     "I build scalable web applications and REST APIs with Next.js, React, NestJS and Node.js — focused on clean architecture, maintainable code and production-ready delivery.",
   description:
     "Full-stack software engineer with hands-on experience building scalable web applications using Next.js, React.js, NestJS and Node.js/Express. Skilled in REST API design, authentication and third-party integrations, with PostgreSQL, MongoDB, MySQL, Docker, Redis and Google Cloud Platform.",
   email: "sobanamjad49@gmail.com",
-  phone: "+92 313 4183635",
   github: "https://github.com/sobanamjad49",
   linkedin: "https://www.linkedin.com/in/soban-amjad-6b3906374",
   resume: "/Soban_Amjad_Resume.pdf",
@@ -52,11 +55,12 @@ export const footerLinks: NavItem[] = navItems.filter((item) =>
 );
 
 /**
- * Only facts the résumé states directly: the 2023–2026 tenure, the three named
- * projects, and the remote working model. No fabricated metrics.
+ * Only facts the résumé states directly: the tenure since 09/2023, the three
+ * named projects, and the one hard metric it gives — the Playwright coverage
+ * lift at Severalnines. No fabricated figures.
  */
 export const heroStats = [
   { value: "3+", label: "Years of professional experience" },
   { value: "3", label: "Production platforms delivered" },
-  { value: "Remote", label: "Working model" },
+  { value: "5→70%", label: "E2E test coverage raised" },
 ] as const;

@@ -149,8 +149,16 @@ function TimelineEntry({ entry }: { entry: (typeof experience)[number] }) {
   );
 }
 
-/** Education and certifications, kept as their own clean section. */
+/**
+ * Education and certifications, kept as their own clean section.
+ *
+ * The résumé currently lists no certifications, so that card is dropped
+ * entirely rather than rendered empty — and the heading drops the word with
+ * it. Re-populating `certifications` brings both back with no other change.
+ */
 export function Credentials() {
+  const hasCertifications = certifications.length > 0;
+
   return (
     <section
       data-cv="credentials"
@@ -164,20 +172,27 @@ export function Credentials() {
               id="credentials-heading"
               className="font-mono text-[11px] tracking-[0.2em] text-ink-subtle uppercase"
             >
-              Education &amp; Certifications
+              {hasCertifications ? "Education & Certifications" : "Education"}
             </h2>
             <span aria-hidden="true" className="h-px flex-1 bg-line" />
           </div>
         </Reveal>
 
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 sm:gap-5">
+        <div
+          className={cn(
+            "mt-6 grid gap-4 sm:gap-5",
+            hasCertifications ? "sm:grid-cols-2" : "sm:max-w-lg",
+          )}
+        >
           <CredentialCard title="Education" icon={GraduationCap} items={education} delay={0} />
-          <CredentialCard
-            title="Certifications"
-            icon={Award}
-            items={certifications}
-            delay={0.1}
-          />
+          {hasCertifications ? (
+            <CredentialCard
+              title="Certifications"
+              icon={Award}
+              items={certifications}
+              delay={0.1}
+            />
+          ) : null}
         </div>
       </div>
     </section>
@@ -222,6 +237,11 @@ function CredentialCard({
               <p className="mt-1 text-[13px] text-ink-subtle text-pretty">
                 {item.institution}
               </p>
+              {item.period ? (
+                <p className="mt-1 font-mono text-[11px] tracking-tight text-ink-subtle">
+                  {item.period}
+                </p>
+              ) : null}
             </li>
           ))}
         </ul>

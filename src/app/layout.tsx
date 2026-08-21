@@ -35,7 +35,7 @@ const jetbrains = JetBrains_Mono({
   preload: false,
 });
 
-const title = `${site.name} — Software Engineer & Full-Stack Developer`;
+const title = `${site.name} — ${site.role}`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -49,15 +49,17 @@ export const metadata: Metadata = {
   creator: site.name,
   keywords: [
     "Soban Amjad",
+    "Full Stack Engineer",
     "Software Engineer",
-    "Full-Stack Developer",
     "Next.js Developer",
     "NestJS",
     "TypeScript",
     "React",
     "Node.js",
+    "GraphQL",
     "PostgreSQL",
     "REST API",
+    "Microservices",
     "Portfolio",
   ],
   alternates: { canonical: "/" },
@@ -100,7 +102,7 @@ const personSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: site.name,
-  jobTitle: "Software Engineer & Full-Stack Developer",
+  jobTitle: site.role,
   description: site.description,
   email: `mailto:${site.email}`,
   url: site.url,
@@ -112,10 +114,19 @@ const personSchema = {
     "React",
     "NestJS",
     "Node.js",
+    "GraphQL",
     "PostgreSQL",
+    "Supabase",
+    "Redis",
     "REST API design",
+    "Microservices",
+    "Event-driven architecture",
+    "WebSockets",
     "Docker",
+    "Kubernetes",
+    "AWS",
     "Google Cloud Platform",
+    "Playwright",
   ],
 };
 

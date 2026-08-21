@@ -71,12 +71,13 @@ export function About() {
 
             <Reveal direction="right" delay={0.08}>
               <p className="mt-5 leading-relaxed text-ink-muted text-pretty">
-                My work covers REST API design, authentication and third-party
-                integrations, backed by PostgreSQL, MongoDB and MySQL. On the
-                infrastructure side I work with Docker, Redis and Google Cloud
-                Platform — containerising services, caching frequently accessed
-                data and deploying to environments that behave the same as the
-                one I develop in.
+                My work covers REST and GraphQL API design, authentication and
+                third-party integrations, backed by PostgreSQL, MySQL, MongoDB
+                and Supabase. I build microservices and event-driven systems
+                with real-time communication over WebSockets, SSE and message
+                queues, and on the infrastructure side I work with Docker,
+                Redis, AWS and GCP — containerising services, caching hot data
+                paths and shipping through CI/CD pipelines on GitHub Actions.
               </p>
             </Reveal>
 
@@ -84,7 +85,8 @@ export function About() {
               <p className="mt-5 leading-relaxed text-ink-muted text-pretty">
                 Throughout, the focus stays the same: clean architecture,
                 maintainable code and collaborative delivery through Git and
-                GitHub. Based in {site.location}, working remotely.
+                GitHub. Based in {site.location}, having worked onsite, remotely
+                and hybrid across teams in Pakistan and Sweden.
               </p>
             </Reveal>
 

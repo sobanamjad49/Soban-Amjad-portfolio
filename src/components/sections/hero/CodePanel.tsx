@@ -18,7 +18,7 @@ const t = (text: string, kind: Kind = "plain") => ({ text, kind });
 const LINES = [
   [t("const", "keyword"), t(" "), t("developer", "name"), t(" = ", "punctuation"), t("{", "punctuation")],
   [t("  "), t("name", "key"), t(": ", "punctuation"), t('"Soban Amjad"', "string"), t(",", "punctuation")],
-  [t("  "), t("role", "key"), t(": ", "punctuation"), t('"Software Engineer"', "string"), t(",", "punctuation")],
+  [t("  "), t("role", "key"), t(": ", "punctuation"), t('"Full Stack Engineer"', "string"), t(",", "punctuation")],
   [
     t("  "),
     t("stack", "key"),

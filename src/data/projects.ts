@@ -2,8 +2,8 @@ import {
   Cloud,
   Container,
   Database,
+  CreditCard,
   Fingerprint,
-  Gauge,
   Layers,
   MemoryStick,
   MonitorSmartphone,
@@ -36,7 +36,9 @@ export const featuredProject = {
   name: "Keyhole",
   domain: "keyhole.co",
   category: "SaaS Platform",
-  role: "Software Engineer",
+  /** The resume lists Keyhole under Projects without attaching a job title,
+   * so this describes the work rather than claiming a role on it. */
+  role: "Full-stack development",
   tagline:
     "A production SaaS platform built on clean architecture — scalable NestJS APIs, secure authentication and a responsive Next.js frontend, containerised and deployed to Google Cloud.",
   overview:
@@ -155,30 +157,23 @@ export const projects: Project[] = [
   {
     name: "Cybrology",
     domain: "cybrology.com",
-    category: "Social Media Analytics Platform",
+    category: "Creator Platform",
     description:
-      "A social media analytics platform. I contributed backend APIs and third-party service integrations, helped keep the NestJS backend scalable, and built the frontend components that render the results.",
+      "A creator platform where I built product features and the secure REST APIs behind them, including the Stripe and payment integrations that carry its transaction workflows.",
     contributions: [
-      "Contributed to the platform by developing backend APIs and integrating third-party services.",
-      "Optimized performance and helped maintain a scalable NestJS backend with PostgreSQL, Redis and Docker.",
-      "Built responsive Next.js frontend components for consistent cross-device user experiences.",
+      "Built creator-platform features and secure REST APIs, including Stripe/payment integrations for reliable transaction workflows.",
+      "Developed responsive Next.js/React interfaces with TypeScript and Tailwind CSS, while leveraging Redis caching to optimize frequently accessed data.",
+      "Supported Dockerized services, PostgreSQL and CI/CD workflows, contributing to stable development, testing and production deployments.",
     ],
-    stack: [
-      "Next.js",
-      "NestJS",
-      "PostgreSQL",
-      "Redis",
-      "Docker",
-      "Google Cloud Platform",
-    ],
+    stack: ["Next.js", "NestJS", "PostgreSQL", "Redis", "Docker"],
     links: {
       live: "https://cybrology.com",
       github: null,
       note: "Source code is private",
     },
-    motif: "analytics",
+    motif: "creator",
     accent: "from-[#7c6bff] to-[#35d6e8]",
-    icon: Gauge,
+    icon: CreditCard,
   },
   {
     name: "Talkspresso",

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowUpRight, Check, Copy, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowUpRight, Check, Copy, Mail, MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/BrandIcons";
 import { MagneticButton } from "@/components/ui/Button";
@@ -168,13 +168,6 @@ function ContactCard() {
             <MapPin className="size-3.5" strokeWidth={1.75} aria-hidden="true" />
             {site.location}
           </span>
-          <a
-            href={`tel:${site.phone.replace(/\s+/g, "")}`}
-            className="inline-flex min-h-8 items-center gap-1.5 rounded-full px-1 transition-colors duration-300 hover:text-ink"
-          >
-            <Phone className="size-3.5" strokeWidth={1.75} aria-hidden="true" />
-            {site.phone}
-          </a>
           <span className="inline-flex items-center gap-2">
             <span className="relative flex size-2">
               <span

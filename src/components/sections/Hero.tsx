@@ -144,7 +144,7 @@ export function Hero() {
                 )}
               />
               <TextReveal
-                text="Software Engineer"
+                text="Full Stack Engineer"
                 delay={0.14}
                 step={0.035}
                 className={cn(
@@ -155,7 +155,7 @@ export function Hero() {
                 wordClassName="text-gradient"
               />
               <TextReveal
-                text="& Full-Stack Developer"
+                text="Building scalable applications"
                 delay={0.22}
                 step={0.04}
                 className={cn(

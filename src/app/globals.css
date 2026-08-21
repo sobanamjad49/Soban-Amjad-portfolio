@@ -642,41 +642,41 @@ html.theme-instant *::after {
      tall; with per-section values it is back to ~0. `auto` means the browser
      replaces the estimate with the section real height as soon as it has
      rendered once, so any drift self-corrects. */
-  [data-cv="about"] { contain-intrinsic-size: auto 2240px; }
-  [data-cv="skills"] { contain-intrinsic-size: auto 2540px; }
-  [data-cv="experience"] { contain-intrinsic-size: auto 1520px; }
-  [data-cv="credentials"] { contain-intrinsic-size: auto 560px; }
+  [data-cv="about"] { contain-intrinsic-size: auto 2340px; }
+  [data-cv="skills"] { contain-intrinsic-size: auto 3740px; }
+  [data-cv="experience"] { contain-intrinsic-size: auto 3760px; }
+  [data-cv="credentials"] { contain-intrinsic-size: auto 300px; }
   [data-cv="featured"] { contain-intrinsic-size: auto 5630px; }
-  [data-cv="projects"] { contain-intrinsic-size: auto 2020px; }
-  [data-cv="process"] { contain-intrinsic-size: auto 2200px; }
+  [data-cv="projects"] { contain-intrinsic-size: auto 2060px; }
+  [data-cv="process"] { contain-intrinsic-size: auto 2250px; }
   [data-cv="philosophy"] { contain-intrinsic-size: auto 2340px; }
-  [data-cv="services"] { contain-intrinsic-size: auto 2850px; }
-  [data-cv="contact"] { contain-intrinsic-size: auto 1050px; }
+  [data-cv="services"] { contain-intrinsic-size: auto 3760px; }
+  [data-cv="contact"] { contain-intrinsic-size: auto 1010px; }
 
   @media (min-width: 768px) {
-  [data-cv="about"] { contain-intrinsic-size: auto 1830px; }
-  [data-cv="skills"] { contain-intrinsic-size: auto 1980px; }
-  [data-cv="experience"] { contain-intrinsic-size: auto 1170px; }
-  [data-cv="credentials"] { contain-intrinsic-size: auto 370px; }
+  [data-cv="about"] { contain-intrinsic-size: auto 1880px; }
+  [data-cv="skills"] { contain-intrinsic-size: auto 2830px; }
+  [data-cv="experience"] { contain-intrinsic-size: auto 2440px; }
+  [data-cv="credentials"] { contain-intrinsic-size: auto 320px; }
   [data-cv="featured"] { contain-intrinsic-size: auto 3930px; }
-  [data-cv="projects"] { contain-intrinsic-size: auto 2010px; }
+  [data-cv="projects"] { contain-intrinsic-size: auto 2070px; }
   [data-cv="process"] { contain-intrinsic-size: auto 1470px; }
   [data-cv="philosophy"] { contain-intrinsic-size: auto 1490px; }
-  [data-cv="services"] { contain-intrinsic-size: auto 1780px; }
-  [data-cv="contact"] { contain-intrinsic-size: auto 910px; }
+  [data-cv="services"] { contain-intrinsic-size: auto 2300px; }
+  [data-cv="contact"] { contain-intrinsic-size: auto 900px; }
   }
 
   @media (min-width: 1280px) {
-  [data-cv="about"] { contain-intrinsic-size: auto 1180px; }
-  [data-cv="skills"] { contain-intrinsic-size: auto 1610px; }
-  [data-cv="experience"] { contain-intrinsic-size: auto 1010px; }
-  [data-cv="credentials"] { contain-intrinsic-size: auto 380px; }
+  [data-cv="about"] { contain-intrinsic-size: auto 1230px; }
+  [data-cv="skills"] { contain-intrinsic-size: auto 2290px; }
+  [data-cv="experience"] { contain-intrinsic-size: auto 2100px; }
+  [data-cv="credentials"] { contain-intrinsic-size: auto 340px; }
   [data-cv="featured"] { contain-intrinsic-size: auto 2870px; }
   [data-cv="projects"] { contain-intrinsic-size: auto 1280px; }
-  [data-cv="process"] { contain-intrinsic-size: auto 1130px; }
+  [data-cv="process"] { contain-intrinsic-size: auto 1120px; }
   [data-cv="philosophy"] { contain-intrinsic-size: auto 1250px; }
-  [data-cv="services"] { contain-intrinsic-size: auto 1330px; }
-  [data-cv="contact"] { contain-intrinsic-size: auto 990px; }
+  [data-cv="services"] { contain-intrinsic-size: auto 1780px; }
+  [data-cv="contact"] { contain-intrinsic-size: auto 970px; }
   }
 }
 
