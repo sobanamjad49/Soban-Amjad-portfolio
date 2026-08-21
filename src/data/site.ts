@@ -25,12 +25,25 @@ export const site = {
   email: "sobanamjad49@gmail.com",
   github: "https://github.com/sobanamjad49",
   linkedin: "https://www.linkedin.com/in/soban-amjad-6b3906374",
-  resume: "/Soban_Amjad_Resume.pdf",
   /**
-   * Set NEXT_PUBLIC_SITE_URL at build time once a domain exists. The localhost
-   * fallback keeps metadata valid without inventing a public URL.
+   * Versioned so a replaced PDF is never served from a stale cache. The file
+   * keeps one filename, so browsers that already hold the previous résumé at
+   * this path would otherwise revalidate at best and serve the old copy at
+   * worst. Bump this whenever the PDF is replaced.
    */
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  resume: "/Soban_Amjad_Resume.pdf?v=2026-08",
+  /**
+   * NEXT_PUBLIC_SITE_URL wins, so a custom domain can be set without a code
+   * change. Vercel injects VERCEL_PROJECT_PRODUCTION_URL (host only, no
+   * scheme) on every build, which keeps canonical/OG URLs correct on the
+   * deployed site instead of falling through to localhost. Local dev keeps
+   * the localhost fallback rather than inventing a public URL.
+   */
+  url:
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : "http://localhost:3000"),
 } as const;
 
 export type NavItem = {
