@@ -11,10 +11,10 @@ export const site = {
   shortRole: "Full Stack Engineer",
   /**
    * The résumé header gives the location as "Asia"; the current role is listed
-   * as "Onsite, Lahore", which is the more specific of the two facts it states.
+   * as on-site in Lahore, which is the more specific of the two facts it states.
    */
   location: "Lahore, Pakistan",
-  workMode: "Onsite",
+  workMode: "On-site",
   /** Current title on the résumé. */
   headline: "Full Stack Engineer",
   /** Condensed from the résumé's professional summary. */
@@ -70,7 +70,7 @@ export const footerLinks: NavItem[] = navItems.filter((item) =>
 /**
  * Only facts the résumé states directly: the tenure since 09/2023, the three
  * named projects, and the one hard metric it gives — the Playwright coverage
- * lift at Severalnines. No fabricated figures.
+ * lift on the SaaS platform role. No fabricated figures.
  */
 export const heroStats = [
   { value: "3+", label: "Years of professional experience" },

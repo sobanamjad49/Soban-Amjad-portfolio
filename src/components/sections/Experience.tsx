@@ -1,7 +1,14 @@
 import { Award, Briefcase, GraduationCap, MapPin } from "lucide-react";
 import { Reveal, Stagger, StaggerItem } from "@/components/ui/Motion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { certifications, education, experience, type Credential } from "@/data/experience";
+import {
+  certifications,
+  education,
+  experience,
+  type Credential,
+  type ExperienceEntry,
+  type ExperienceRole,
+} from "@/data/experience";
 import { cn } from "@/lib/utils";
 
 export function Experience() {
@@ -38,7 +45,7 @@ export function Experience() {
 
           <ol className="flex flex-col gap-12">
             {experience.map((entry) => (
-              <TimelineEntry key={`${entry.company}-${entry.role}`} entry={entry} />
+              <TimelineEntry key={entry.company} entry={entry} />
             ))}
           </ol>
         </div>
@@ -52,8 +59,15 @@ export function Experience() {
  * a per-entry `useInView` that re-rendered the component on every scroll pass;
  * it is now the same `.rv-in` class the shared observer already sets, read
  * through a group variant, so scrolling causes no React work at all.
+ *
+ * An employer with more than one role renders grouped — the company takes the
+ * heading and its roles nest beneath it, the way the profile presents them.
+ * A single-role employer stays flat, with the role as the heading.
  */
-function TimelineEntry({ entry }: { entry: (typeof experience)[number] }) {
+function TimelineEntry({ entry }: { entry: ExperienceEntry }) {
+  const grouped = entry.roles.length > 1;
+  const [lead] = entry.roles;
+
   return (
     <li data-reveal="up" data-reveal-soft="" className="group/entry relative pl-11 sm:pl-16">
       {/* Node */}
@@ -95,57 +109,93 @@ function TimelineEntry({ entry }: { entry: (typeof experience)[number] }) {
           <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
             <div className="min-w-0">
               <h3 className="font-display text-xl font-semibold tracking-tight sm:text-2xl">
-                {entry.company ?? entry.role}
+                {grouped ? entry.company : lead.role}
               </h3>
-              {entry.company ? (
-                <p className="mt-1 text-[15px] font-medium text-accent sm:text-base">
-                  {entry.role}
-                </p>
-              ) : null}
+              {/* Sizes are explicit rather than `text-base`: the theme defines
+                  a `--color-base` token, so Tailwind emits `text-base` as a
+                  colour utility that would repaint this the page background. */}
+              <p className="mt-1 text-[15px] font-medium text-accent sm:text-[16px]">
+                {grouped
+                  ? [entry.employmentType, entry.tenure].filter(Boolean).join(" · ")
+                  : `${entry.company} · ${entry.employmentType}`}
+              </p>
             </div>
 
             <div className="flex shrink-0 flex-col gap-1.5 sm:items-end">
-              <span className="inline-flex items-center rounded-full border border-line bg-base-deep/60 px-3 py-1 font-mono text-[11px] tracking-tight text-ink-muted">
-                {entry.period}
-              </span>
+              {grouped ? null : (
+                <span className="inline-flex items-center rounded-full border border-line bg-base-deep/60 px-3 py-1 font-mono text-[11px] tracking-tight text-ink-muted">
+                  {lead.period}
+                </span>
+              )}
               <span className="inline-flex items-center gap-1.5 text-[12px] text-ink-subtle">
                 <MapPin className="size-3.5" strokeWidth={1.75} aria-hidden="true" />
-                {entry.mode}
+                {entry.location} · {entry.mode}
               </span>
             </div>
           </div>
 
-          <p className="mt-5 max-w-3xl leading-relaxed text-ink-muted text-pretty">
-            {entry.summary}
-          </p>
-
-          <Stagger step={0.055} className="mt-6 flex flex-col gap-3">
-            {entry.highlights.map((highlight) => (
-              <StaggerItem key={highlight}>
-                <div className="flex gap-3">
+          {grouped ? (
+            <ol className="mt-7 flex flex-col gap-9 border-l border-line pl-5 sm:pl-6">
+              {entry.roles.map((role) => (
+                <li key={role.role} className="relative">
                   <span
                     aria-hidden="true"
-                    className="mt-2 size-1.5 shrink-0 rounded-full bg-accent/70"
+                    className="absolute top-2 -left-5 size-2 -translate-x-1/2 rounded-full border border-line bg-base sm:-left-6"
                   />
-                  <p className="text-[14px] leading-relaxed text-ink-muted text-pretty sm:text-[15px]">
-                    {highlight}
-                  </p>
-                </div>
-              </StaggerItem>
-            ))}
-          </Stagger>
-
-          <ul className="mt-6 flex flex-wrap gap-2 border-t border-line pt-5">
-            {entry.stack.map((tech) => (
-              <li key={tech}>
-                <span className="inline-flex items-center rounded-full border border-line bg-base-deep/50 px-2.5 py-1 font-mono text-[11px] tracking-tight text-ink-muted transition-colors duration-300 hover:border-accent/40 hover:text-ink">
-                  {tech}
-                </span>
-              </li>
-            ))}
-          </ul>
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-5 gap-y-1.5">
+                    <h4 className="font-display text-[16px] font-semibold tracking-tight sm:text-[18px]">
+                      {role.role}
+                    </h4>
+                    <span className="font-mono text-[11px] tracking-tight text-ink-subtle">
+                      {role.period}
+                    </span>
+                  </div>
+                  <RoleBody role={role} />
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <RoleBody role={lead} />
+          )}
       </article>
     </li>
+  );
+}
+
+/** Summary, bullets and stack — identical whether the role is nested or not. */
+function RoleBody({ role }: { role: ExperienceRole }) {
+  return (
+    <>
+      <p className="mt-4 max-w-3xl leading-relaxed text-ink-muted text-pretty">
+        {role.summary}
+      </p>
+
+      <Stagger step={0.055} className="mt-5 flex flex-col gap-3">
+        {role.highlights.map((highlight) => (
+          <StaggerItem key={highlight}>
+            <div className="flex gap-3">
+              <span
+                aria-hidden="true"
+                className="mt-2 size-1.5 shrink-0 rounded-full bg-accent/70"
+              />
+              <p className="text-[14px] leading-relaxed text-ink-muted text-pretty sm:text-[15px]">
+                {highlight}
+              </p>
+            </div>
+          </StaggerItem>
+        ))}
+      </Stagger>
+
+      <ul className="mt-6 flex flex-wrap gap-2 border-t border-line pt-5">
+        {role.stack.map((tech) => (
+          <li key={tech}>
+            <span className="inline-flex items-center rounded-full border border-line bg-base-deep/50 px-2.5 py-1 font-mono text-[11px] tracking-tight text-ink-muted transition-colors duration-300 hover:border-accent/40 hover:text-ink">
+              {tech}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }
 

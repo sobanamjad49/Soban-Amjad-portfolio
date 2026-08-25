@@ -85,8 +85,8 @@ export function About() {
               <p className="mt-5 leading-relaxed text-ink-muted text-pretty">
                 Throughout, the focus stays the same: clean architecture,
                 maintainable code and collaborative delivery through Git and
-                GitHub. Based in {site.location}, having worked onsite, remotely
-                and hybrid across teams in Pakistan and Sweden.
+                GitHub. Based in {site.location}, working on-site locally and
+                remotely with distributed teams.
               </p>
             </Reveal>
 
@@ -103,7 +103,7 @@ export function About() {
                         />
                       </span>
                       <div className="min-w-0">
-                        <h3 className="font-display text-[15px] font-semibold tracking-tight sm:text-base">
+                        <h3 className="font-display text-[15px] font-semibold tracking-tight sm:text-[16px]">
                           {title}
                         </h3>
                         <p className="mt-1.5 text-sm leading-relaxed text-ink-muted text-pretty">

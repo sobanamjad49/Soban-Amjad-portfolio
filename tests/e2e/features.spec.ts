@@ -209,7 +209,7 @@ test.describe("links and contact", () => {
 test.describe("content integrity", () => {
   test("shows the resume's projects and marks private source honestly", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByRole("heading", { name: "Keyhole", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Proptoc", exact: true })).toBeVisible();
     await expect(page.getByText("Cybrology", { exact: true }).first()).toBeVisible();
     await expect(page.getByText("Talkspresso", { exact: true }).first()).toBeVisible();
     // Projects with no public repo must say so rather than link somewhere fake.
@@ -219,7 +219,9 @@ test.describe("content integrity", () => {
   test("does not contain content absent from the resume", async ({ page }) => {
     await page.goto("/");
     const body = (await page.locator("body").innerText()).toLowerCase();
-    for (const term of ["proptoc", "snagprotect", "stripe", "drizzle", "material ui"]) {
+    // "proptoc" and "stripe" were removed from this list deliberately: Proptoc
+    // is now the featured case study, and the résumé names Stripe directly.
+    for (const term of ["snagprotect", "drizzle", "material ui"]) {
       expect(body, `"${term}" is not in the resume`).not.toContain(term);
     }
   });

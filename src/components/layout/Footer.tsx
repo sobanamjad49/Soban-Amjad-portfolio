@@ -22,7 +22,7 @@ export function Footer() {
               <span className="grid size-9 place-items-center rounded-xl border border-line-strong bg-surface font-display text-[13px] font-semibold tracking-tight">
                 <span className="text-gradient">{site.initials}</span>
               </span>
-              <span className="font-display text-base font-semibold tracking-tight">
+              <span className="font-display text-[16px] font-semibold tracking-tight">
                 {site.name}
               </span>
             </a>
