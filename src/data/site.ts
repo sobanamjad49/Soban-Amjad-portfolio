@@ -31,7 +31,7 @@ export const site = {
    * this path would otherwise revalidate at best and serve the old copy at
    * worst. Bump this whenever the PDF is replaced.
    */
-  resume: "/Soban_Amjad_Resume.pdf?v=2026-08",
+  resume: "/Soban_Amjad_Resume.pdf?v=2026-08-25",
   /**
    * NEXT_PUBLIC_SITE_URL wins, so a custom domain can be set without a code
    * change. Vercel injects VERCEL_PROJECT_PRODUCTION_URL (host only, no
