@@ -296,7 +296,7 @@ function MobileMenu({
                       onClick={onNavigate}
                       aria-current={active === item.id ? "true" : undefined}
                       className={cn(
-                        "group flex items-center justify-between rounded-2xl px-4 py-3.5 text-base font-medium transition-colors duration-300",
+                        "group flex items-center justify-between rounded-2xl px-4 py-3.5 text-[16px] font-medium transition-colors duration-300",
                         active === item.id
                           ? "bg-accent-soft text-ink"
                           : "text-ink-muted hover:bg-base-deep hover:text-ink",

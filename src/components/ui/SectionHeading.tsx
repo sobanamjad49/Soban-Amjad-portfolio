@@ -62,7 +62,10 @@ export function SectionHeading({
         <Reveal direction="up" delay={0.12}>
           <p
             className={cn(
-              "max-w-2xl text-[15px] leading-relaxed text-ink-muted text-pretty sm:text-base",
+              // Not `sm:text-base`: the theme defines a `--color-base` token,
+              // so Tailwind emits `text-base` as a colour utility, which would
+              // repaint this in the page background colour.
+              "max-w-2xl text-[15px] leading-relaxed text-ink-muted text-pretty sm:text-[16px]",
               centered && "mx-auto",
             )}
           >

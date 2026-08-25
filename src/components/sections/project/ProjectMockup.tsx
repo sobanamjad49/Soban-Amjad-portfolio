@@ -3,16 +3,17 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Lock } from "lucide-react";
 import { useEffect, useState } from "react";
+import { featuredProject } from "@/data/projects";
 import { cn } from "@/lib/utils";
 
 /**
  * Architecture viewer for the featured case study.
  *
- * The product itself is private, so rather than mocking up fake application
- * screens with invented business data this shows the *engineering* the résumé
- * actually describes: the API layer, the access control on it, the Redis cache
- * in front of it and the containerised deployment behind it. Nothing here
- * claims to be a screenshot.
+ * The source is private, so rather than mocking up fake application screens
+ * with invented business data this shows the *engineering* the case study
+ * describes: the API layer, the access control on it, the Redis cache in front
+ * of it and the containerised deployment behind it. Nothing here claims to be
+ * a screenshot.
  */
 
 type Row = { label: string; value: string; tone: Tone };
@@ -97,13 +98,13 @@ export const VIEWS: View[] = [
   {
     id: "deploy",
     label: "Deployment",
-    path: "docker / gcp",
-    caption: "Containerised services deployed on Google Cloud Platform",
+    path: "docker / deploy",
+    caption: "Containerised services, deployed to match local development",
     nav: ["Dockerfile", "Images", "Containers", "Cloud deploy"],
     rows: [
       { label: "Build image", value: "docker", tone: "accent" },
       { label: "Run container", value: "parity with local", tone: "positive" },
-      { label: "Deploy", value: "google cloud platform", tone: "positive" },
+      { label: "Deploy", value: "containerised services", tone: "positive" },
     ],
     bars: [
       { label: "Source", weight: 42 },
@@ -212,9 +213,11 @@ export function ProjectMockup({
           <aside className="hidden w-40 shrink-0 border-r border-line bg-base-deep/30 p-3 sm:block lg:w-44">
             <div className="mb-4 flex items-center gap-2 px-1">
               <span className="grid size-6 place-items-center rounded-md bg-accent text-[10px] font-bold text-accent-ink">
-                K
+                {featuredProject.name.charAt(0)}
               </span>
-              <span className="text-[11px] font-semibold tracking-tight">Keyhole</span>
+              <span className="text-[11px] font-semibold tracking-tight">
+                {featuredProject.name}
+              </span>
             </div>
             <AnimatePresence mode="wait" initial={false}>
               <motion.ul

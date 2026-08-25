@@ -64,9 +64,12 @@ export function FeaturedProject() {
                   href={featuredProject.links.live ?? "#"}
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="group inline-flex min-h-8 items-center rounded-full border border-line bg-base-deep/60 px-3 py-1.5 font-mono text-[11px] text-ink-muted transition-colors duration-300 hover:border-accent/45 hover:text-ink"
+                  title={featuredProject.domain}
+                  className="group inline-flex min-h-8 items-center rounded-full border border-line bg-base-deep/60 px-3 py-1.5 text-[12px] font-medium text-ink-muted transition-colors duration-300 hover:border-accent/45 hover:text-ink"
                 >
-                  {featuredProject.domain}
+                  {/* A label rather than the raw host — the URL is long and
+                      reads as noise beside the project name. */}
+                  Live Site
                   <ArrowUpRight
                     aria-hidden="true"
                     className="ml-1 inline size-3 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
