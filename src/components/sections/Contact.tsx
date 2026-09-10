@@ -162,7 +162,8 @@ function ContactCard() {
           </MagneticButton>
         </div>
 
-        {/* Meta — every value below is taken from the résumé header. ------ */}
+        {/* Meta — location comes from the résumé header; availability is a
+            stated preference, not something the résumé claims. ------------ */}
         <div className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2.5 border-t border-line pt-6 text-[12.5px] text-ink-subtle">
           <span className="inline-flex items-center gap-1.5">
             <MapPin className="size-3.5" strokeWidth={1.75} aria-hidden="true" />
@@ -179,7 +180,7 @@ function ContactCard() {
                 className="relative inline-flex size-2 rounded-full bg-emerald-500"
               />
             </span>
-            {site.workMode}
+            {site.availability}
           </span>
         </div>
       </div>

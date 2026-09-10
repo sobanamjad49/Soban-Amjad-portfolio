@@ -14,7 +14,12 @@ export const site = {
    * as on-site in Lahore, which is the more specific of the two facts it states.
    */
   location: "Lahore, Pakistan",
-  workMode: "On-site",
+  /**
+   * Shown beside the green pulse in the hero and contact chips, so it states
+   * what is being sought rather than the current arrangement. This is a stated
+   * preference, not a résumé fact — the résumé still lists the role as on-site.
+   */
+  availability: "Open to remote opportunities",
   /** Current title on the résumé. */
   headline: "Full Stack Engineer",
   /** Condensed from the résumé's professional summary. */
