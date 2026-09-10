@@ -123,7 +123,7 @@ export function Hero() {
                   />
                 </span>
                 <span className="text-[11.5px] font-medium tracking-tight text-ink-muted sm:text-xs">
-                  {site.location} · {site.workMode}
+                  {site.location} · {site.availability}
                 </span>
               </div>
             </Entrance>
