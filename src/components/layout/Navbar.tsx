@@ -175,8 +175,7 @@ export function Navbar() {
 
             <a
               href={site.resume}
-              target="_blank"
-              rel="noreferrer noopener"
+              download="Soban_Amjad_Resume.pdf"
               className={cn(
                 "group hidden h-10 items-center gap-2 rounded-full bg-ink px-4 text-[13px] font-medium text-base sm:inline-flex",
                 "transition-transform duration-300 hover:-translate-y-0.5",
@@ -321,8 +320,7 @@ function MobileMenu({
             <div className="mt-3 flex items-center gap-2 border-t border-line pt-3">
               <a
                 href={site.resume}
-                target="_blank"
-                rel="noreferrer noopener"
+                download="Soban_Amjad_Resume.pdf"
                 onClick={onClose}
                 className="flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl bg-ink text-sm font-medium text-base"
               >

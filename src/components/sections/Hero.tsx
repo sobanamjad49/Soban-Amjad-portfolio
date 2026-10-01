@@ -185,7 +185,7 @@ export function Hero() {
 
                 <MagneticButton
                   href={site.resume}
-                  external
+                  download="Soban_Amjad_Resume.pdf"
                   variant="secondary"
                   className="w-full sm:w-auto"
                   ariaLabel={`Download Resume — ${site.name} (PDF)`}
