@@ -42,16 +42,16 @@ export const experience: ExperienceEntry[] = [
       {
         role: "Full Stack Engineer",
         /** Tenure is stated as of the profile snapshot; refresh alongside it. */
-        period: "Apr 2026 — Present · 5 mos",
+        period: "Apr 2026 — Present · 6 mos",
         summary:
-          "Architecture-through-production ownership of multi-tenant products — real-time services, AI and RAG pipelines, and secure payment and healthcare integrations.",
+          "Architecture-through-production ownership of multi-tenant SaaS — real-time services, AI and RAG pipelines, and secure payment and healthcare integrations.",
         highlights: [
-          "Architected and delivered scalable, multi-tenant applications using Next.js, React, TypeScript, NestJS, tRPC, PostgreSQL, Supabase, Prisma and REST/GraphQL APIs, owning features from architecture through production.",
-          "Designed microservices and event-driven systems with real-time communication using WebSockets, Pusher, SSE, Redis and message queues, optimizing applications for scalability and low latency.",
+          "Own multi-tenant SaaS applications end to end, from architecture through production, using Next.js, React, TypeScript, NestJS, tRPC, PostgreSQL, Supabase, Prisma and REST/GraphQL APIs.",
+          "Designed microservices and event-driven systems with real-time communication over WebSockets, Pusher, SSE, Redis and message queues, optimizing applications for scalability and low latency.",
           "Built production-grade AI/LLM workflows and RAG pipelines for summarization, classification, semantic search and automation, integrating vector databases to ground AI responses in product and customer data.",
-          "Delivered real-time platforms using Python microservices, GCP/GKE, Kubernetes, Docker and CI/CD, with scalable cloud infrastructure and reliable deployment workflows.",
+          "Delivered real-time platforms using Python microservices, deployed with Docker and Kubernetes on GCP/GKE through CI/CD pipelines and reliable deployment workflows.",
           "Architected secure payment and healthcare solutions integrating Stripe, Square, HelloSign and Google APIs, implementing row-level security and secure data-access patterns for sensitive application data.",
-          "Applied Playwright E2E and integration testing alongside AI-assisted development tools such as Cursor, Claude Code, GitHub Copilot, ChatGPT and Codex to improve engineering productivity and code quality.",
+          "Applied Playwright E2E and integration testing alongside AI-assisted development tools (Cursor, Claude Code, GitHub Copilot, ChatGPT, Codex) to improve engineering productivity and code quality.",
         ],
         stack: [
           "Next.js",
@@ -77,7 +77,7 @@ export const experience: ExperienceEntry[] = [
   {
     company: "Remote",
     employmentType: "Full-time",
-    tenure: "2 yrs 7 mos",
+    tenure: "3 yrs 7 mos",
     location: "United States",
     mode: "Remote",
     roles: [
@@ -103,7 +103,7 @@ export const experience: ExperienceEntry[] = [
       },
       {
         role: "Software Engineer",
-        period: "Sep 2023 — May 2024 · 9 mos",
+        period: "Sep 2022 — May 2024 · 1 yr 9 mos",
         summary:
           "Full-stack product delivery with real-time features and Docker-based CI/CD pipelines deploying across four cloud providers.",
         highlights: [

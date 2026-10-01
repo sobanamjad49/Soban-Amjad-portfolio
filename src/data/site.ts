@@ -73,12 +73,12 @@ export const footerLinks: NavItem[] = navItems.filter((item) =>
 );
 
 /**
- * Only facts the résumé states directly: the tenure since 09/2023, the three
+ * Only facts the résumé states directly: the tenure since 09/2022, the three
  * named projects, and the one hard metric it gives — the Playwright coverage
  * lift on the SaaS platform role. No fabricated figures.
  */
 export const heroStats = [
-  { value: "3+", label: "Years of professional experience" },
+  { value: "4+", label: "Years of professional experience" },
   { value: "3", label: "Production platforms delivered" },
   { value: "5→70%", label: "E2E test coverage raised" },
 ] as const;
