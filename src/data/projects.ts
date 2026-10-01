@@ -1,16 +1,17 @@
 import {
   ClipboardCheck,
-  Container,
-  Database,
   CreditCard,
+  Database,
   FileText,
-  Fingerprint,
+  Gauge,
   Gavel,
+  HardDrive,
   Layers,
-  MemoryStick,
   MonitorSmartphone,
   Plug,
   ShieldCheck,
+  Smartphone,
+  Sparkles,
   Wallet,
   type LucideIcon,
 } from "lucide-react";
@@ -30,94 +31,87 @@ export type Capability = {
 };
 
 /**
- * Featured case study: Proptoc — a property snagging, inspection and
- * renovation-coordination platform, built end to end.
+ * Featured case study: PropToc — a two-sided property snagging and
+ * maintenance marketplace.
  *
- * Unlike the entries below, this one is not on the résumé: the product facts
- * (the inspection method, the report, the blind bidding, the milestone
- * payments, the plans) are taken from the live product itself, and the role
- * and stack are as stated by its author. Nothing is inferred beyond that.
+ * Every claim below traces to the résumé's PropToc entry: the React Native
+ * customer app and Next.js portals, the NestJS/PostgreSQL/S3 backend, the
+ * report engine and weighted Snag Score, the anonymous sealed bidding, and
+ * the 50/50 milestone payment flow. Nothing is inferred beyond that.
  */
 export const featuredProject = {
-  name: "Proptoc",
+  name: "PropToc",
   domain: "proptoc-demo.vercel.app",
-  category: "PropTech Platform",
+  category: "Property snagging and maintenance marketplace",
   role: "Full-stack development — architecture through production",
   tagline:
-    "A property snagging and renovation platform — 120-point inspections, graded defect reports, blind vendor bidding and milestone-protected payments, built end to end on Next.js and NestJS.",
+    "A two-sided marketplace where homeowners buy inspection plans, receive an AI-assisted snagging report and collect bids from vetted vendors — React Native app, Next.js portals and NestJS services.",
   overview:
-    "Proptoc carries a property owner from handover to finished repairs without leaving the product. An inspection team works the property room by room, a graded report evidences every defect with photos and a Snag Score, vetted trades bid blind on the scoped work, and payment releases against milestones as repairs are approved. I built the platform end to end — the Next.js frontend, the NestJS API behind it, the PostgreSQL model, the Redis caching and the containerised deployment.",
+    "PropToc carries a homeowner from inspection to finished repairs without leaving the product. They buy a property inspection plan, receive an AI-assisted snagging report, and collect bids from vetted maintenance vendors. I built it end to end: a React Native customer app, Next.js admin and vendor portals, and NestJS services on PostgreSQL with file storage on S3.",
   problem:
-    "At handover a new owner has no structured way to find what is wrong, price the fix fairly, or hold a contractor to it. Defects get missed, quotes are not comparable because every trade scopes the job differently, and paying up front removes any leverage once work begins.",
+    "A homeowner has no structured way to record what is wrong with a property, price the fix fairly, or hold a vendor to the work. Defects go undocumented, quotes are not comparable because every vendor scopes the job differently, and paying up front removes all leverage once work begins.",
   solution:
-    "One platform covering the whole chain. A 120-point room-by-room inspection produces a severity-graded report with photo evidence and a Snag Score within 48 hours. That scoped defect list goes to vetted trades who bid blind — no vendor sees another's price — so quotes compare on price, timeline and experience rather than on scope. Work is then tracked room by room with photo evidence, and payment splits across milestones behind approval gates.",
+    "One marketplace covering the whole chain. Inspection data becomes a severity-graded report with inline photos and a weighted Snag Score per property. That scoped defect list goes to vetted vendors who bid sealed and anonymous — no vendor sees another or the customer — so offers compare on price and timeline rather than on scope. Payment then splits 50/50 across milestones, with the final instalment held behind customer approval and a dispute state.",
   contributions: [
-    "Built the platform end to end — Next.js frontend, NestJS REST API, PostgreSQL data model, Redis caching and containerised deployment.",
-    "Modelled the inspection domain: a 120-point room-by-room method with severity grading, photo evidence and a computed Snag Score, generated into a shareable report.",
-    "Implemented the blind bidding marketplace so approved vendors quote without visibility of competitors' pricing, comparable across price, timeline and experience.",
-    "Built milestone-based payments with approval gates, releasing funds in stages as work is completed and signed off rather than up front.",
-    "Delivered vendor onboarding across specialist trades, with role-separated access for owners, vendors and inspectors.",
-    "Shipped tiered plans spanning apartments to unlimited-area properties, including re-inspection and extended defect monitoring.",
+    "Built a two-sided marketplace where homeowners buy property inspection plans, receive an AI-assisted snagging report and collect bids from vetted maintenance vendors: React Native customer app, Next.js admin and vendor portals, and NestJS services on PostgreSQL with file storage on S3.",
+    "Developed a report engine that turns structured inspection data into server-rendered PDFs with inline photos, severity indicators and a weighted Snag Score per property, with an LLM layer that cleans up inspector notes and drafts the summary.",
+    "Implemented anonymous sealed bidding: vendors can't see each other or the customer, and identities are revealed only once an offer is accepted.",
+    "Built a milestone payment flow (50% upfront, 50% on customer approval) with commission calculation on total project value, invoice generation, payout tracking and a dispute state that holds the final payment.",
   ],
   capabilities: [
     {
       name: "Structured inspections",
       icon: ClipboardCheck,
       description:
-        "A 120-point room-by-room method with severity grading and photo evidence.",
+        "Inspection data captured as structured records rather than free-form notes.",
     },
     {
       name: "Graded defect reports",
       icon: FileText,
-      description: "A Snag Score and evidenced defect list, delivered within 48 hours.",
+      description:
+        "Server-rendered PDFs with inline photos and severity indicators per defect.",
     },
     {
-      name: "Blind vendor bidding",
+      name: "Weighted Snag Score",
+      icon: Gauge,
+      description: "A single score per property, computed from the graded defect list.",
+    },
+    {
+      name: "Anonymous sealed bidding",
       icon: Gavel,
       description:
-        "Approved trades quote the same scope without seeing competitors' prices.",
+        "Vendors bid without seeing each other or the customer until an offer is accepted.",
     },
     {
       name: "Milestone payments",
       icon: Wallet,
-      description: "Funds release in stages behind approval gates rather than up front.",
-    },
-    {
-      name: "Role-separated access",
-      icon: Fingerprint,
       description:
-        "Owners, vendors and inspectors each reach only what their role allows.",
+        "50% upfront and 50% on approval, with a dispute state holding the final payment.",
     },
     {
-      name: "Redis caching",
-      icon: MemoryStick,
-      description: "Frequently read report and marketplace data served from cache.",
+      name: "LLM summary layer",
+      icon: Sparkles,
+      description: "Cleans up inspector notes and drafts the report summary.",
     },
   ] satisfies Capability[],
   architecture: [
     {
-      label: "Frontend",
+      label: "Customer app",
+      icon: Smartphone,
+      detail:
+        "A React Native application where homeowners buy inspection plans, read reports and review bids.",
+    },
+    {
+      label: "Web portals",
       icon: MonitorSmartphone,
       detail:
-        "A responsive Next.js application covering the owner, vendor and inspector journeys.",
+        "Next.js admin and vendor portals covering vendor onboarding, bidding and day-to-day operations.",
     },
     {
       label: "API layer",
       icon: Layers,
       detail:
-        "NestJS REST APIs serving inspections, reports, bidding and payments, organised along clean architecture boundaries.",
-    },
-    {
-      label: "Access control",
-      icon: ShieldCheck,
-      detail:
-        "Authentication and role-based authorization separating owners, vendors and internal inspectors.",
-    },
-    {
-      label: "Caching",
-      icon: MemoryStick,
-      detail:
-        "Redis in front of frequently read report and marketplace data, keeping hot reads off the database.",
+        "NestJS services covering inspections, reports, bidding and the payment flow.",
     },
     {
       label: "Data",
@@ -126,15 +120,20 @@ export const featuredProject = {
         "PostgreSQL modelling properties, inspections, defects, bids and payment milestones.",
     },
     {
-      label: "Delivery",
-      icon: Container,
+      label: "File storage",
+      icon: HardDrive,
+      detail: "Inspection photos and generated report PDFs stored on S3.",
+    },
+    {
+      label: "Payments",
+      icon: CreditCard,
       detail:
-        "Services containerised with Docker so the deployed environment matches local development.",
+        "Commission calculated on total project value, with invoice generation and payout tracking.",
     },
   ],
   outcome:
-    "The platform takes a property from handover inspection to signed-off repairs in one place: defects are graded and evidenced rather than argued over, quotes arrive comparable because every trade bids against the same scope, and staged payments keep the owner's leverage until the work is approved.",
-  stack: ["Next.js", "NestJS", "PostgreSQL", "Redis", "Docker"],
+    "The marketplace takes a property from inspection to signed-off repairs in one place: defects are evidenced and scored rather than argued over, bids arrive comparable because every vendor quotes the same scope blind, and staged payments keep the homeowner's leverage until the work is approved.",
+  stack: ["React Native", "Next.js", "NestJS", "PostgreSQL", "S3", "LLM"],
   links: {
     live: "https://proptoc-demo.vercel.app",
     github: null,
@@ -160,23 +159,34 @@ export const projects: Project[] = [
   {
     name: "Cybrology",
     domain: "cybrology.com",
-    category: "Creator Platform",
+    category: "Cyber risk assessment and AI learning platform",
     description:
-      "A creator platform where I built product features and the secure REST APIs behind them, including the Stripe and payment integrations that carry its transaction workflows.",
+      "A multi-tenant platform that scores an organisation's cyber risk and turns the gaps it finds into an ordered learning path. I led the team building it, across a Turborepo monorepo pairing a Next.js web app and NestJS API with a BullMQ worker and a Python FastAPI service owning every AI feature.",
     contributions: [
-      "Built creator-platform features and secure REST APIs, including Stripe/payment integrations for reliable transaction workflows.",
-      "Developed responsive Next.js/React interfaces with TypeScript and Tailwind CSS, while leveraging Redis caching to optimize frequently accessed data.",
-      "Supported Dockerized services, PostgreSQL and CI/CD workflows, contributing to stable development, testing and production deployments.",
+      "Led the team building a multi-tenant platform in a Turborepo monorepo: Next.js 16 App Router web app, NestJS 11 API, a separate BullMQ worker process and a Python FastAPI service that owns all AI features.",
+      "Built a risk engine scoring organisations 0–100 from a versioned question bank with server-side skip logic, passive domain checks (TLS, SPF/DKIM/DMARC, breach lookups) and standalone mini tools. Scoring is deterministic and reproducible; the LLM only writes narrative on gaps the rule engine has already flagged, keeping compliance output defensible.",
+      "Developed a RAG layer over course transcripts — Whisper transcription, semantic chunking, Vertex AI embeddings and ANN search in AlloyDB with ScaNN — with a structured re-rank that turns a user's risk gaps into an ordered learning path.",
+      "Mapped answers to a NIST CSF control library with per-framework status reporting for GDPR, ISO 27001, PDPL, HIPAA, PCI DSS and SOC 2.",
+      "Enforced tenant isolation at three layers (JWT claims, a tenant-scoped base repository, Postgres row-level security) with dynamic roles over a seeded permission catalogue, plus an LMS with Bunny.net video, quizzes, certificates, phishing simulations and 7 locales including RTL Arabic.",
     ],
-    stack: ["Next.js", "NestJS", "PostgreSQL", "Redis", "Docker"],
+    stack: [
+      "Next.js",
+      "NestJS",
+      "BullMQ",
+      "Python FastAPI",
+      "Vertex AI",
+      "AlloyDB",
+      "PostgreSQL",
+      "Turborepo",
+    ],
     links: {
       live: "https://cybrology.com",
       github: null,
       note: "Source code is private",
     },
-    motif: "creator",
+    motif: "analytics",
     accent: "from-[#7c6bff] to-[#35d6e8]",
-    icon: CreditCard,
+    icon: ShieldCheck,
   },
   {
     name: "Talkspresso",
