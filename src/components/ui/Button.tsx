@@ -35,7 +35,8 @@ type MagneticProps = {
   /** Renders an anchor when present, a button otherwise. */
   href?: string;
   external?: boolean;
-  download?: boolean;
+  /** A string sets the saved filename, so the `?v=` cache-buster is not kept. */
+  download?: boolean | string;
   onClick?: () => void;
   ariaLabel?: string;
   type?: "button" | "submit";

@@ -33,6 +33,19 @@ const open = (href: string) => () => {
   window.open(href, "_blank", "noopener,noreferrer");
 };
 
+/**
+ * Saves the file instead of handing it to the browser's PDF viewer, so the
+ * "Download Resume" command does what its label says.
+ */
+const save = (href: string, filename: string) => () => {
+  const link = document.createElement("a");
+  link.href = href;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+};
+
 /** Built once at module scope — the list never changes at runtime. */
 const COMMANDS: Command[] = [
   ...navItems.map(
@@ -51,7 +64,7 @@ const COMMANDS: Command[] = [
     hint: "PDF",
     group: "Actions",
     icon: Download,
-    run: open(site.resume),
+    run: save(site.resume, "Soban_Amjad_Resume.pdf"),
   },
   {
     id: "email",
