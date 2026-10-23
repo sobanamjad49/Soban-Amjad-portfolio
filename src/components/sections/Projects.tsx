@@ -20,7 +20,7 @@ export function Projects() {
               <span className="text-gradient">helped build</span>
             </span>
           }
-          description="Product work across social media analytics and creator platforms — backend APIs, third-party integrations and the responsive interfaces on top of them."
+          description="Product work across cyber risk, AI learning and creator platforms — backend APIs, third-party integrations and the responsive interfaces on top of them."
         />
 
         <ul className="mt-14 grid gap-5 sm:mt-16 lg:grid-cols-2 lg:gap-6">

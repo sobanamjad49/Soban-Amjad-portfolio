@@ -31,32 +31,32 @@ export type Capability = {
 };
 
 /**
- * Featured case study: PropToc — a two-sided property snagging and
+ * Featured case study: PropToc — a two-sided property inspection and
  * maintenance marketplace.
  *
  * Every claim below traces to the résumé's PropToc entry: the React Native
  * customer app and Next.js portals, the NestJS/PostgreSQL/S3 backend, the
- * report engine and weighted Snag Score, the anonymous sealed bidding, and
+ * report engine and weighted defect score, the anonymous sealed bidding, and
  * the 50/50 milestone payment flow. Nothing is inferred beyond that.
  */
 export const featuredProject = {
   name: "PropToc",
   domain: "proptoc-demo.vercel.app",
-  category: "Property snagging and maintenance marketplace",
+  category: "Property inspection and maintenance marketplace",
   role: "Full-stack development — architecture through production",
   tagline:
-    "A two-sided marketplace where homeowners buy inspection plans, receive an AI-assisted snagging report and collect bids from vetted vendors — React Native app, Next.js portals and NestJS services.",
+    "A two-sided marketplace where homeowners buy inspection plans, receive an AI-enhanced inspection report and collect bids from vetted vendors — React Native app, Next.js portals and NestJS services.",
   overview:
-    "PropToc carries a homeowner from inspection to finished repairs without leaving the product. They buy a property inspection plan, receive an AI-assisted snagging report, and collect bids from vetted maintenance vendors. I built it end to end: a React Native customer app, Next.js admin and vendor portals, and NestJS services on PostgreSQL with file storage on S3.",
+    "PropToc carries a homeowner from inspection to finished repairs without leaving the product. They buy a property inspection plan, receive an AI-enhanced inspection report, and collect bids from vetted maintenance vendors. I built it end to end: a React Native customer app, Next.js admin and vendor portals, and NestJS services on PostgreSQL with file storage on S3.",
   problem:
     "A homeowner has no structured way to record what is wrong with a property, price the fix fairly, or hold a vendor to the work. Defects go undocumented, quotes are not comparable because every vendor scopes the job differently, and paying up front removes all leverage once work begins.",
   solution:
-    "One marketplace covering the whole chain. Inspection data becomes a severity-graded report with inline photos and a weighted Snag Score per property. That scoped defect list goes to vetted vendors who bid sealed and anonymous — no vendor sees another or the customer — so offers compare on price and timeline rather than on scope. Payment then splits 50/50 across milestones, with the final instalment held behind customer approval and a dispute state.",
+    "One marketplace covering the whole chain. Inspection data becomes a severity-graded report with inline photos and a weighted defect score per property. That scoped defect list goes to vetted vendors who bid sealed and anonymous — no vendor sees another or the customer — so offers compare on price and timeline rather than on scope. Payment then splits 50/50 across milestones, with the final instalment held behind customer approval and a dispute state.",
   contributions: [
-    "Built a two-sided marketplace where homeowners buy property inspection plans, receive an AI-assisted snagging report and collect bids from vetted maintenance vendors: React Native customer app, Next.js admin and vendor portals, and NestJS services on PostgreSQL with file storage on S3.",
-    "Developed a report engine that turns structured inspection data into server-rendered PDFs with inline photos, severity indicators and a weighted Snag Score per property, with an LLM layer that cleans up inspector notes and drafts the summary.",
-    "Implemented anonymous sealed bidding: vendors can't see each other or the customer, and identities are revealed only once an offer is accepted.",
-    "Built a milestone payment flow (50% upfront, 50% on customer approval) with commission calculation on total project value, invoice generation, payout tracking and a dispute state that holds the final payment.",
+    "Launched a two-sided marketplace where homeowners buy property inspection plans, receive an AI-enhanced inspection report and collect bids from vetted maintenance vendors, spanning a React Native customer app, Next.js admin and vendor portals, and NestJS services on PostgreSQL with S3 file storage.",
+    "Designed a report engine that turns structured inspection data into server-rendered PDFs with inline photos, severity indicators and a weighted defect score per property, with an LLM layer that cleans up inspector notes and drafts the summary.",
+    "Implemented anonymous sealed bidding in which vendors cannot see each other or the customer, and identities are revealed only once an offer is accepted.",
+    "Devised a milestone payment flow (50% up front, 50% on customer approval) with commission calculation on total project value, invoice generation, payout tracking and a dispute state that holds the final payment.",
   ],
   capabilities: [
     {
@@ -72,7 +72,7 @@ export const featuredProject = {
         "Server-rendered PDFs with inline photos and severity indicators per defect.",
     },
     {
-      name: "Weighted Snag Score",
+      name: "Weighted defect score",
       icon: Gauge,
       description: "A single score per property, computed from the graded defect list.",
     },
@@ -163,11 +163,12 @@ export const projects: Project[] = [
     description:
       "A multi-tenant platform that scores an organisation's cyber risk and turns the gaps it finds into an ordered learning path. I led the team building it, across a Turborepo monorepo pairing a Next.js web app and NestJS API with a BullMQ worker and a Python FastAPI service owning every AI feature.",
     contributions: [
-      "Led the team building a multi-tenant platform in a Turborepo monorepo: Next.js 16 App Router web app, NestJS 11 API, a separate BullMQ worker process and a Python FastAPI service that owns all AI features.",
-      "Built a risk engine scoring organisations 0–100 from a versioned question bank with server-side skip logic, passive domain checks (TLS, SPF/DKIM/DMARC, breach lookups) and standalone mini tools. Scoring is deterministic and reproducible; the LLM only writes narrative on gaps the rule engine has already flagged, keeping compliance output defensible.",
-      "Developed a RAG layer over course transcripts — Whisper transcription, semantic chunking, Vertex AI embeddings and ANN search in AlloyDB with ScaNN — with a structured re-rank that turns a user's risk gaps into an ordered learning path.",
-      "Mapped answers to a NIST CSF control library with per-framework status reporting for GDPR, ISO 27001, PDPL, HIPAA, PCI DSS and SOC 2.",
-      "Enforced tenant isolation at three layers (JWT claims, a tenant-scoped base repository, Postgres row-level security) with dynamic roles over a seeded permission catalogue, plus an LMS with Bunny.net video, quizzes, certificates, phishing simulations and 7 locales including RTL Arabic.",
+      "Led the team building a multi-tenant platform in a Turborepo monorepo: a Next.js 16 App Router web app, a NestJS 11 API, a separate BullMQ worker process and a Python FastAPI service that owns all AI features.",
+      "Developed a deterministic risk engine that scores organisations from 0 to 100 using a versioned question bank, server-side skip logic, passive domain checks (TLS, SPF/DKIM/DMARC, breach lookups) and standalone mini tools, with the LLM limited to narrating gaps the rule engine has already flagged so compliance output stays defensible.",
+      "Engineered a RAG layer over course transcripts — Whisper transcription, semantic chunking, Vertex AI embeddings and ANN vector search in AlloyDB — with a structured ranking step that turns a user's risk gaps into an ordered learning path.",
+      "Mapped answers to a NIST CSF control library with per-framework status reporting for 6 frameworks, including GDPR, ISO 27001, HIPAA, PCI DSS and SOC 2.",
+      "Enforced tenant isolation at 3 layers (JWT claims, a tenant-scoped base repository and PostgreSQL row-level security) with dynamic roles over a seeded permission catalogue.",
+      "Added an LMS with hosted video lessons, quizzes, certificates, phishing simulations and 7 locales including RTL Arabic.",
     ],
     stack: [
       "Next.js",
@@ -196,8 +197,8 @@ export const projects: Project[] = [
       "A creator platform where I built product features and the secure REST APIs behind them, including the payment integration that drives its transaction workflows.",
     contributions: [
       "Built creator-platform features and secure REST APIs, including payment integration for transaction workflows.",
-      "Developed responsive Next.js interfaces and used Redis to optimize frequently accessed data paths.",
-      "Supported Dockerized services and PostgreSQL for stable development and deployment workflows.",
+      "Crafted responsive Next.js interfaces and applied Redis caching to frequently accessed data paths.",
+      "Supported Docker-based services and PostgreSQL databases for stable development and deployment workflows.",
     ],
     stack: ["Next.js", "NestJS", "PostgreSQL", "Redis", "Docker"],
     links: {

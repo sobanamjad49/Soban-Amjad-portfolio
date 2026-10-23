@@ -42,16 +42,14 @@ export const experience: ExperienceEntry[] = [
       {
         role: "Full Stack Engineer",
         /** Tenure is stated as of the profile snapshot; refresh alongside it. */
-        period: "Apr 2026 — Present · 6 mos",
+        period: "Apr 2026 — Present · 7 mos",
         summary:
           "Architecture-through-production ownership of multi-tenant SaaS — real-time services, AI and RAG pipelines, and secure payment and healthcare integrations.",
         highlights: [
-          "Own multi-tenant SaaS applications end to end, from architecture through production, using Next.js, React, TypeScript, NestJS, tRPC, PostgreSQL, Supabase, Prisma and REST/GraphQL APIs.",
-          "Designed microservices and event-driven systems with real-time communication over WebSockets, Pusher, SSE, Redis and message queues, optimizing applications for scalability and low latency.",
-          "Built production-grade AI/LLM workflows and RAG pipelines for summarization, classification, semantic search and automation, integrating vector databases to ground AI responses in product and customer data.",
-          "Delivered real-time platforms using Python microservices, deployed with Docker and Kubernetes on GCP/GKE through CI/CD pipelines and reliable deployment workflows.",
-          "Architected secure payment and healthcare solutions integrating Stripe, Square, HelloSign and Google APIs, implementing row-level security and secure data-access patterns for sensitive application data.",
-          "Applied Playwright E2E and integration testing alongside AI-assisted development tools (Cursor, Claude Code, GitHub Copilot, ChatGPT, Codex) to improve engineering productivity and code quality.",
+          "Owned multi-tenant SaaS applications from architecture through production on Next.js, React, TypeScript, NestJS, tRPC, PostgreSQL, Supabase, Prisma and REST/GraphQL APIs, architecting event-driven microservices on 5 real-time and messaging technologies (WebSockets, Pusher, SSE, Redis and message queues).",
+          "Shipped production-grade AI/LLM workflows and RAG pipelines across 4 use cases (summarization, classification, semantic search and automation), grounding AI responses in product and customer data through vector databases.",
+          "Integrated 4 third-party platforms (Stripe, Square, HelloSign and Google APIs) into secure payment and healthcare solutions, enforcing row-level security and secure data-access patterns for sensitive data.",
+          "Deployed real-time platforms running on Python microservices with Docker and Kubernetes on GCP/GKE through CI/CD, backed by Playwright E2E and integration testing and 5 AI coding tools (Cursor, Claude Code, GitHub Copilot, ChatGPT, Codex).",
         ],
         stack: [
           "Next.js",
@@ -87,10 +85,8 @@ export const experience: ExperienceEntry[] = [
         summary:
           "Node.js and TypeScript services behind a database-automation SaaS platform, alongside a substantial lift in test coverage and access control.",
         highlights: [
-          "Developed and maintained Node.js/TypeScript services for database automation, monitoring, backups and failover within a core SaaS platform.",
-          "Increased Playwright E2E test coverage from 5% to 70%, reducing production regressions and improving release confidence.",
-          "Integrated Keycloak SSO and access control, and introduced a monorepo architecture for reusable components and scalable development.",
-          "Improved React/TypeScript UI responsiveness and dashboard performance across key platform modules.",
+          "Maintained and extended Node.js/TypeScript services for 4 core platform operations (database automation, monitoring, backups and failover), rolled out Keycloak SSO and access control, and introduced a monorepo architecture for reusable components.",
+          "Increased Playwright E2E test coverage from 5% to 70%, reducing production regressions, and optimized React/TypeScript UI responsiveness and dashboard performance across key platform modules.",
         ],
         stack: [
           "Node.js",
@@ -105,12 +101,10 @@ export const experience: ExperienceEntry[] = [
         role: "Software Engineer",
         period: "Sep 2022 — May 2024 · 1 yr 9 mos",
         summary:
-          "Full-stack product delivery with real-time features and Docker-based CI/CD pipelines deploying across four cloud providers.",
+          "Full-stack product delivery with real-time features and Docker-based CI/CD pipelines deploying to four platforms.",
         highlights: [
-          "Built and maintained full-stack products using React, Next.js, TypeScript, Node.js, NestJS, PostgreSQL, MongoDB and Supabase, owning features from development to production.",
-          "Developed scalable REST APIs, real-time features with WebSockets/SSE, and backend services using microservices and event-driven architectures.",
-          "Implemented Docker-based CI/CD pipelines with GitHub Actions, supporting reliable deployments across AWS, GCP, Vercel and Railway.",
-          "Added E2E and integration testing with Playwright and used AI-assisted development tools for refactoring, debugging, test generation and code exploration.",
+          "Built and maintained full-stack products with React, Next.js, TypeScript, Node.js, NestJS, PostgreSQL, MongoDB and Supabase, shipping REST APIs, real-time WebSockets/SSE features and event-driven microservices to 4 platforms (AWS, GCP, Vercel and Railway) through Docker-based CI/CD in GitHub Actions.",
+          "Established E2E and integration testing with Playwright, and applied AI coding tools across 4 workflows: refactoring, debugging, test generation and code exploration.",
         ],
         stack: [
           "React",

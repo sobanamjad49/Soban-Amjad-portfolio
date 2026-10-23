@@ -638,45 +638,64 @@ html.theme-instant *::after {
   }
 
   /* Measured, not guessed. A single blanket estimate produced a CLS of 0.342
-     on a phone viewport, because these sections range from 560px to 5,630px
+     on a phone viewport, because these sections range from 200px to 7,560px
      tall; with per-section values it is back to ~0. `auto` means the browser
      replaces the estimate with the section real height as soon as it has
-     rendered once, so any drift self-corrects. */
-  [data-cv="about"] { contain-intrinsic-size: auto 2340px; }
-  [data-cv="skills"] { contain-intrinsic-size: auto 3740px; }
-  [data-cv="experience"] { contain-intrinsic-size: auto 3760px; }
-  [data-cv="credentials"] { contain-intrinsic-size: auto 300px; }
-  [data-cv="featured"] { contain-intrinsic-size: auto 5630px; }
-  [data-cv="projects"] { contain-intrinsic-size: auto 2060px; }
-  [data-cv="process"] { contain-intrinsic-size: auto 2250px; }
-  [data-cv="philosophy"] { contain-intrinsic-size: auto 2340px; }
-  [data-cv="services"] { contain-intrinsic-size: auto 3760px; }
-  [data-cv="contact"] { contain-intrinsic-size: auto 1010px; }
+     rendered once, so any drift self-corrects.
+
+     Each value is the section's content height (padding excluded — the
+     browser adds that on top) with every section rendered, taken at 412px,
+     768px, 1024px and 1280px. Re-measure whenever section content changes:
+     the self-correction only happens on render, so a stale estimate still
+     grows the page under a scroll that has already "reached" the bottom,
+     leaving the last sections unvisited. */
+  [data-cv="about"] { contain-intrinsic-size: auto 2120px; }
+  [data-cv="skills"] { contain-intrinsic-size: auto 7560px; }
+  [data-cv="experience"] { contain-intrinsic-size: auto 2960px; }
+  [data-cv="credentials"] { contain-intrinsic-size: auto 200px; }
+  [data-cv="featured"] { contain-intrinsic-size: auto 5840px; }
+  [data-cv="projects"] { contain-intrinsic-size: auto 2280px; }
+  [data-cv="process"] { contain-intrinsic-size: auto 1970px; }
+  [data-cv="philosophy"] { contain-intrinsic-size: auto 2120px; }
+  [data-cv="services"] { contain-intrinsic-size: auto 3500px; }
+  [data-cv="contact"] { contain-intrinsic-size: auto 810px; }
 
   @media (min-width: 768px) {
-  [data-cv="about"] { contain-intrinsic-size: auto 1880px; }
-  [data-cv="skills"] { contain-intrinsic-size: auto 2830px; }
-  [data-cv="experience"] { contain-intrinsic-size: auto 2440px; }
-  [data-cv="credentials"] { contain-intrinsic-size: auto 320px; }
-  [data-cv="featured"] { contain-intrinsic-size: auto 3930px; }
-  [data-cv="projects"] { contain-intrinsic-size: auto 2070px; }
-  [data-cv="process"] { contain-intrinsic-size: auto 1470px; }
-  [data-cv="philosophy"] { contain-intrinsic-size: auto 1490px; }
-  [data-cv="services"] { contain-intrinsic-size: auto 2300px; }
-  [data-cv="contact"] { contain-intrinsic-size: auto 900px; }
+  [data-cv="about"] { contain-intrinsic-size: auto 1660px; }
+  [data-cv="skills"] { contain-intrinsic-size: auto 5610px; }
+  [data-cv="experience"] { contain-intrinsic-size: auto 1880px; }
+  [data-cv="credentials"] { contain-intrinsic-size: auto 210px; }
+  [data-cv="featured"] { contain-intrinsic-size: auto 4260px; }
+  [data-cv="projects"] { contain-intrinsic-size: auto 2100px; }
+  [data-cv="process"] { contain-intrinsic-size: auto 1250px; }
+  [data-cv="philosophy"] { contain-intrinsic-size: auto 1260px; }
+  [data-cv="services"] { contain-intrinsic-size: auto 2080px; }
+  [data-cv="contact"] { contain-intrinsic-size: auto 670px; }
+  }
+
+  /* The lg grids switch on here, which shortens most sections by a quarter
+     or more — too far for the 768px values to stand in. */
+  @media (min-width: 1024px) {
+  [data-cv="about"] { contain-intrinsic-size: auto 1140px; }
+  [data-cv="skills"] { contain-intrinsic-size: auto 4360px; }
+  [data-cv="experience"] { contain-intrinsic-size: auto 1720px; }
+  [data-cv="featured"] { contain-intrinsic-size: auto 3300px; }
+  [data-cv="projects"] { contain-intrinsic-size: auto 1390px; }
+  [data-cv="process"] { contain-intrinsic-size: auto 1050px; }
+  [data-cv="philosophy"] { contain-intrinsic-size: auto 1040px; }
+  [data-cv="services"] { contain-intrinsic-size: auto 1750px; }
+  [data-cv="contact"] { contain-intrinsic-size: auto 720px; }
   }
 
   @media (min-width: 1280px) {
-  [data-cv="about"] { contain-intrinsic-size: auto 1230px; }
-  [data-cv="skills"] { contain-intrinsic-size: auto 2290px; }
-  [data-cv="experience"] { contain-intrinsic-size: auto 2100px; }
-  [data-cv="credentials"] { contain-intrinsic-size: auto 340px; }
-  [data-cv="featured"] { contain-intrinsic-size: auto 2870px; }
-  [data-cv="projects"] { contain-intrinsic-size: auto 1280px; }
-  [data-cv="process"] { contain-intrinsic-size: auto 1120px; }
-  [data-cv="philosophy"] { contain-intrinsic-size: auto 1250px; }
-  [data-cv="services"] { contain-intrinsic-size: auto 1780px; }
-  [data-cv="contact"] { contain-intrinsic-size: auto 970px; }
+  [data-cv="about"] { contain-intrinsic-size: auto 1020px; }
+  [data-cv="skills"] { contain-intrinsic-size: auto 4160px; }
+  [data-cv="experience"] { contain-intrinsic-size: auto 1640px; }
+  [data-cv="featured"] { contain-intrinsic-size: auto 2950px; }
+  [data-cv="projects"] { contain-intrinsic-size: auto 1310px; }
+  [data-cv="process"] { contain-intrinsic-size: auto 890px; }
+  [data-cv="philosophy"] { contain-intrinsic-size: auto 990px; }
+  [data-cv="services"] { contain-intrinsic-size: auto 1600px; }
   }
 }
 

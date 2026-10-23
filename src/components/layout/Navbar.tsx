@@ -42,7 +42,12 @@ export function Navbar() {
     // Hide on downward scroll once past the hero, reveal immediately on the
     // way back up — keeps the reading area clear without hiding navigation.
     const delta = current - lastY.current;
-    if (!menuOpen && Date.now() > revealLockUntil.current) {
+    const now = Date.now();
+    if (now <= revealLockUntil.current) {
+      // A long in-page journey can outlast the initial hold, so keep holding
+      // while it is still moving; the rule resumes once it has stopped.
+      revealLockUntil.current = Math.max(revealLockUntil.current, now + 300);
+    } else if (!menuOpen) {
       if (current > 520 && delta > 6) setHidden(true);
       else if (delta < -6 || current < 240) setHidden(false);
     }
