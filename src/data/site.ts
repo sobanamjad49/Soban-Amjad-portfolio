@@ -7,7 +7,7 @@
 export const site = {
   name: "Soban Amjad",
   initials: "SA",
-  role: "Full Stack Engineer",
+  role: "Full Stack Software Engineer",
   shortRole: "Full Stack Engineer",
   /**
    * The résumé header gives the location as "Asia"; the current role is listed
@@ -20,13 +20,13 @@ export const site = {
    * preference, not a résumé fact — the résumé still lists the role as on-site.
    */
   availability: "Open to remote opportunities",
-  /** Current title on the résumé. */
-  headline: "Full Stack Engineer",
+  /** Title in the résumé header. */
+  headline: "Full Stack Software Engineer",
   /** Condensed from the résumé's professional summary. */
   statement:
-    "I build scalable web applications and REST APIs with Next.js, React, NestJS and Node.js — focused on clean architecture, maintainable code and production-ready delivery.",
+    "I own multi-tenant SaaS products from architecture through production — Next.js and React frontends, NestJS, Node.js and Python services, and AI/LLM workflows grounded in real data.",
   description:
-    "Full-stack software engineer with hands-on experience building scalable web applications using Next.js, React.js, NestJS and Node.js/Express. Skilled in REST API design, authentication and third-party integrations, with PostgreSQL, MongoDB, MySQL, Docker, Redis and Google Cloud Platform.",
+    "Full Stack Software Engineer with 4+ years of experience owning multi-tenant SaaS products from architecture through production. Builds Node.js, NestJS, Python and Java services, Next.js/React frontends and PostgreSQL data layers, with Redis-backed real-time systems, AI/LLM workflows and RAG pipelines, shipped on Kubernetes and AWS.",
   email: "sobanamjad49@gmail.com",
   github: "https://github.com/sobanamjad49",
   linkedin: "https://www.linkedin.com/in/soban-amjad-6b3906374",
@@ -36,7 +36,7 @@ export const site = {
    * this path would otherwise revalidate at best and serve the old copy at
    * worst. Bump this whenever the PDF is replaced.
    */
-  resume: "/Soban_Amjad_Resume.pdf?v=2026-10-01",
+  resume: "/Soban_Amjad_Resume.pdf?v=2026-10-23",
   /**
    * NEXT_PUBLIC_SITE_URL wins, so a custom domain can be set without a code
    * change. Vercel injects VERCEL_PROJECT_PRODUCTION_URL (host only, no

@@ -17,7 +17,7 @@ test.describe("page shell", () => {
     await page.goto("/");
 
     await expect(page).toHaveTitle(
-      "Soban Amjad — Full Stack Engineer",
+      "Soban Amjad — Full Stack Software Engineer",
     );
     const description = await page
       .locator('meta[name="description"]')

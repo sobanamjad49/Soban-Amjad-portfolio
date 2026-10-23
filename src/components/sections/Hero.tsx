@@ -144,7 +144,7 @@ export function Hero() {
                 )}
               />
               <TextReveal
-                text="Full Stack Engineer"
+                text="Full Stack Software Engineer"
                 delay={0.14}
                 step={0.035}
                 className={cn(
