@@ -1,7 +1,13 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { PALETTE_HANDOFF, PALETTE_REQUESTED } from "@/lib/boot";
+
+type BootWindow = Window & {
+  [PALETTE_REQUESTED]?: boolean;
+  [PALETTE_HANDOFF]?: () => void;
+};
 
 const CustomCursor = dynamic(
   () => import("@/components/layout/CustomCursor").then((m) => m.CustomCursor),
@@ -26,17 +32,22 @@ const CommandPalette = dynamic(
  *
  * The shortcut itself is not deferred. A bare keydown listener — a few bytes,
  * registered immediately — watches for ⌘K and pulls the palette in on the
- * spot, opening it as though it had been mounted all along. So the cost moves
- * off the critical path without the shortcut ever being dead.
+ * spot, opening it as though it had been mounted all along. A press that lands
+ * before this component has hydrated is caught by the boot script and picked
+ * up here on mount. So the cost moves off the critical path without the
+ * shortcut ever being dead.
  */
 export function DeferredChrome() {
   const [ready, setReady] = useState(false);
   const [openOnMount, setOpenOnMount] = useState(false);
+  const [paletteLive, setPaletteLive] = useState(false);
+  const markPaletteLive = useCallback(() => setPaletteLive(true), []);
 
   useEffect(() => {
-    // Once the palette is mounted it owns the shortcut; this hand-off listener
-    // has nothing left to do.
-    if (ready) return;
+    // Once the palette has registered its own listener it owns the shortcut,
+    // and this hand-off listener has nothing left to do. `ready` alone is not
+    // enough: the palette's chunk can still be downloading after it flips.
+    if (paletteLive) return;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key.toLowerCase() !== "k" || !(event.metaKey || event.ctrlKey)) return;
       event.preventDefault();
@@ -44,8 +55,26 @@ export function DeferredChrome() {
       setReady(true);
     };
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [ready]);
+
+    const boot = window as BootWindow;
+    boot[PALETTE_HANDOFF]?.();
+    let early = 0;
+    if (boot[PALETTE_REQUESTED]) {
+      // Deferred a tick so the state update lands outside the effect body, and
+      // the flag is only consumed once it does — a StrictMode re-run clears
+      // the first timer and must still find it set.
+      early = window.setTimeout(() => {
+        boot[PALETTE_REQUESTED] = false;
+        setOpenOnMount(true);
+        setReady(true);
+      });
+    }
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.clearTimeout(early);
+    };
+  }, [paletteLive]);
 
   useEffect(() => {
     if (typeof window.requestIdleCallback !== "function") {
@@ -61,7 +90,7 @@ export function DeferredChrome() {
   return (
     <>
       <CustomCursor />
-      <CommandPalette defaultOpen={openOnMount} />
+      <CommandPalette defaultOpen={openOnMount} onShortcutReady={markPaletteLive} />
     </>
   );
 }

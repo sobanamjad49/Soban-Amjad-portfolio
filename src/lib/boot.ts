@@ -1,12 +1,15 @@
 /**
  * Inline, render-blocking bootstrap. Injected into <head> by the root layout.
  *
- * Two jobs, both of which have to happen before first paint or before the
- * React bundle lands:
+ * Each of these has to happen before first paint or before the React bundle
+ * lands:
  *
  * 1. Resolve the theme, so a stored choice never flashes.
  * 2. Mark the document as script-capable and start the scroll-reveal observer.
  * 3. Track the pointer for the GlowCard spotlight.
+ * 4. Catch ⌘K pressed before hydration. DeferredChrome's listener only exists
+ *    once React has hydrated, so until then the shortcut would be dead; this
+ *    records the press and DeferredChrome opens the palette when it mounts.
  *
  * The reveal engine lives here rather than in a client component on purpose.
  * `html.js [data-reveal]` hides content until it is revealed, and hydration on
@@ -18,6 +21,9 @@
  * falls back to its finished state.
  */
 const STORAGE_KEY = "sa-theme";
+/** Window globals the boot script hands to DeferredChrome for an early ⌘K. */
+const PALETTE_REQUESTED = "__saPaletteRequested";
+const PALETTE_HANDOFF = "__saPaletteHandoff";
 
 export const bootScript = `
 (function(){
@@ -29,6 +35,14 @@ export const bootScript = `
   } catch (e) {
     root.classList.add("dark");
   }
+
+  function earlyPalette(e){
+    if (!(e.metaKey || e.ctrlKey) || !e.key || e.key.toLowerCase() !== "k") return;
+    e.preventDefault();
+    window.${PALETTE_REQUESTED} = true;
+  }
+  window.addEventListener("keydown", earlyPalette);
+  window.${PALETTE_HANDOFF} = function(){ window.removeEventListener("keydown", earlyPalette); };
 
   if (!("IntersectionObserver" in window)) return;
   root.classList.add("js");
@@ -126,4 +140,4 @@ export const bootScript = `
 })();
 `.trim();
 
-export { STORAGE_KEY };
+export { PALETTE_HANDOFF, PALETTE_REQUESTED, STORAGE_KEY };

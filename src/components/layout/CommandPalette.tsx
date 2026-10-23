@@ -109,7 +109,14 @@ const COMMANDS: Command[] = [
  * single keydown listener and nothing else — no panel sitting in the DOM, no
  * layout, no paint.
  */
-export function CommandPalette({ defaultOpen = false }: { defaultOpen?: boolean }) {
+export function CommandPalette({
+  defaultOpen = false,
+  onShortcutReady,
+}: {
+  defaultOpen?: boolean;
+  /** Fires once this palette's own ⌘K listener is registered. */
+  onShortcutReady?: () => void;
+}) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
@@ -157,6 +164,11 @@ export function CommandPalette({ defaultOpen = false }: { defaultOpen?: boolean 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
+
+  // Runs after the effect above, so the listener is already in place.
+  useEffect(() => {
+    onShortcutReady?.();
+  }, [onShortcutReady]);
 
   const onListKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === "Escape") {

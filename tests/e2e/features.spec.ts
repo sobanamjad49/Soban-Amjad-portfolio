@@ -127,6 +127,29 @@ test.describe("theme", () => {
     const startedDark = ((await html.getAttribute("class")) ?? "").includes("dark");
     const toggle = page.getByRole("button", { name: /toggle dark and light theme/i });
 
+    // Measure the toggle, not hydration. `goto` resolves on load, while React
+    // is still hydrating; a click then waits behind those long tasks, which put
+    // the reading anywhere from 150ms to 1.2s and failed the budget at random.
+    // Wait for 500ms with no long task (capped at 8s) before clicking.
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) => {
+          const t0 = performance.now();
+          let lastBusy = t0;
+          new PerformanceObserver((list) => {
+            for (const task of list.getEntries()) {
+              lastBusy = Math.max(lastBusy, task.startTime + task.duration);
+            }
+          }).observe({ type: "longtask", buffered: true });
+          const check = () => {
+            const now = performance.now();
+            if (now - lastBusy > 500 || now - t0 > 8000) resolve();
+            else setTimeout(check, 100);
+          };
+          check();
+        }),
+    );
+
     const elapsed = await page.evaluate(async () => {
       const btn = document.querySelector<HTMLButtonElement>(
         'button[aria-label="Toggle dark and light theme"]',
